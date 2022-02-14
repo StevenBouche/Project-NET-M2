@@ -1,4 +1,6 @@
-﻿namespace LibraryProject.Infrastructure.Persistence
+﻿using LibraryProject.Domain.Entities;
+
+namespace LibraryProject.Infrastructure.Persistence
 {
     public class LibraryContextSeed
     {
@@ -11,7 +13,25 @@
 
         public void SeedData()
         {
-            //Context.SaveChanges();
+            AddUniqueBook(new Book()
+            {
+                Name = "Toto book",
+                Author = "Toto",
+                Price = 1000000000000,
+                CreatedAt = DateTimeOffset.UtcNow,
+                UpdatedAt = DateTimeOffset.UtcNow
+            });
+
+            Context.SaveChanges();
+        }
+
+        private void AddUniqueBook(Book book)
+        {
+            var currentUser = Context.Books.FirstOrDefault(u => u.Name == book.Name);
+            if (currentUser == null)
+            {
+                Context.Books.Add(book);
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ namespace LibraryProject.Domain.Entities
         public string Name { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
         public double Price { get; set; }
-        public IList<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
+        public string Content { get; set; } = string.Empty;
+        public virtual IList<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
     }
 }

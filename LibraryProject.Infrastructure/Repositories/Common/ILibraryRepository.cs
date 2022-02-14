@@ -30,9 +30,9 @@ namespace LibraryProject.Infrastructure.Repositories.Common
 
         Task<bool> DeleteAsync(T entity);
 
-        Task<bool> UpsertAsync(T entity);
+        Task<T> UpsertAsync(T entity);
 
-        Task<bool> UpdateAsync(T entity);
+        Task<T> UpdateAsync(T entity);
 
         IEnumerable<T> FilterByCriteria(Func<T, bool> predicate);
     }

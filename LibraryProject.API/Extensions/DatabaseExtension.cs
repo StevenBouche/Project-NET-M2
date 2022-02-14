@@ -12,7 +12,7 @@ namespace LibraryProject.API.Extensions
         {
             services.AddDbContext<LibraryContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString(nameof(LibraryContext)), sqlServerOptions =>
+                options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString(nameof(LibraryContext)), sqlServerOptions =>
                 {
                     sqlServerOptions.CommandTimeout(Timeout);
                     sqlServerOptions.MigrationsAssembly("LibraryProject.API");

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using LibraryProject.Business.Exceptions.Common;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System.Net;
@@ -12,6 +13,12 @@ namespace LibraryProject.API.Controllers.Common
 
         [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
         public string? Message { get; set; }
+
+        [JsonProperty("serviceErrorCode", NullValueHandling = NullValueHandling.Ignore)]
+        public int? ServiceErrorCode { get; set; } = null;
+
+        [JsonProperty("methodErrorCode", NullValueHandling = NullValueHandling.Ignore)]
+        public int? MethodErrorCode { get; set; } = null;
     }
 
     public abstract class LibraryBaseController : ControllerBase
@@ -53,8 +60,8 @@ namespace LibraryProject.API.Controllers.Common
         {
             switch (exception)
             {
-                /*   case BusinessException e:
-                       return LogInfoAndReturn(exception, e.HttpStatusCode);*/
+                case BusinessException e:
+                    return LogInfoAndReturn(exception, e.HttpStatusCode);
 
                 case ArgumentException _:
                     return LogErrorAndReturn(exception, HttpStatusCode.BadRequest);

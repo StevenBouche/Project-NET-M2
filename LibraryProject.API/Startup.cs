@@ -40,10 +40,8 @@ namespace LibraryProject.API
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
-            // Policies CORS
+            services.ConfigureMapper();
             services.ConfigurePolicies(policiesConfig);
-
-            // Configure db
             services.ConfigureDb(Configuration);
         }
 
@@ -63,7 +61,7 @@ namespace LibraryProject.API
             app.UseRouting();
 
             // Security
-            //app.UseAuthentication();
+            // app.UseAuthentication();
             // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

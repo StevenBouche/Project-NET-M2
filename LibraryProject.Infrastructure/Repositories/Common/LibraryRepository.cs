@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace LibraryProject.Infrastructure.Repositories.Common
 {
-    public class LibraryRepository<T> : ILibraryRepository<T> where T : AuditableEntity
+    public abstract class LibraryRepository<T> : ILibraryRepository<T> where T : AuditableEntity
     {
         protected LibraryContext Context;
         internal DbSet<T> DbSet;
@@ -80,7 +80,7 @@ namespace LibraryProject.Infrastructure.Repositories.Common
             return false;
         }
 
-        public async Task<bool> UpsertAsync(T entity)
+        public async Task<T> UpsertAsync(T entity)
         {
             if (AnyById(entity.Id))
             {
@@ -88,12 +88,11 @@ namespace LibraryProject.Infrastructure.Repositories.Common
             }
             else
             {
-                await AddAsync(entity);
-                return true;
+                return await AddAsync(entity);
             }
         }
 
-        public async Task<bool> UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             try
             {
@@ -103,9 +102,9 @@ namespace LibraryProject.Infrastructure.Repositories.Common
             catch (Exception ex)
             {
                 Logger.LogError("Error when updating entity : {Message}", ex.Message);
-                return false;
             }
-            return true;
+
+            return entity;
         }
 
         public bool AnyById(int id)

@@ -3,21 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.Domain", "LibraryProject.Domain\LibraryProject.Domain.csproj", "{CB19AD04-32B5-4CB0-AD46-D821A21F9D97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Domain", "LibraryProject.Domain\LibraryProject.Domain.csproj", "{CB19AD04-32B5-4CB0-AD46-D821A21F9D97}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.Infrastructure", "LibraryProject.Infrastructure\LibraryProject.Infrastructure.csproj", "{D378CC81-2974-4A47-8554-8E0EC0B24A3E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Infrastructure", "LibraryProject.Infrastructure\LibraryProject.Infrastructure.csproj", "{D378CC81-2974-4A47-8554-8E0EC0B24A3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.Business", "LibraryProject.Business\LibraryProject.Business.csproj", "{BBB11888-A08E-47C4-8545-A56F9D081DE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Business", "LibraryProject.Business\LibraryProject.Business.csproj", "{BBB11888-A08E-47C4-8545-A56F9D081DE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.API", "LibraryProject.API\LibraryProject.API.csproj", "{D973ACB5-4CCC-41ED-B576-2E589902E125}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.API", "LibraryProject.API\LibraryProject.API.csproj", "{D973ACB5-4CCC-41ED-B576-2E589902E125}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D2CB3658-814B-49D3-968B-8C6105A642CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.WebUI.Server", "LibraryProject.WebUI\Server\LibraryProject.WebUI.Server.csproj", "{F9AD5BAB-458A-4E95-B5A0-03EEC283E9C2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.WebUI.Server", "LibraryProject.WebUI\Server\LibraryProject.WebUI.Server.csproj", "{F9AD5BAB-458A-4E95-B5A0-03EEC283E9C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.WebUI.Client", "LibraryProject.WebUI\Client\LibraryProject.WebUI.Client.csproj", "{22A5E933-8D1A-483B-B9A9-C4446C8C2F78}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.WebUI.Client", "LibraryProject.WebUI\Client\LibraryProject.WebUI.Client.csproj", "{22A5E933-8D1A-483B-B9A9-C4446C8C2F78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.WebUI.Shared", "LibraryProject.WebUI\Shared\LibraryProject.WebUI.Shared.csproj", "{C75543F8-89C0-4CA1-93DF-C51580AB2461}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.WebUI.Shared", "LibraryProject.WebUI\Shared\LibraryProject.WebUI.Shared.csproj", "{C75543F8-89C0-4CA1-93DF-C51580AB2461}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.Business.Dto", "..\LibraryProject.Business.Dto\LibraryProject.Business.Dto.csproj", "{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{C75543F8-89C0-4CA1-93DF-C51580AB2461}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C75543F8-89C0-4CA1-93DF-C51580AB2461}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C75543F8-89C0-4CA1-93DF-C51580AB2461}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
