@@ -1,0 +1,72 @@
+﻿using LibraryProject.API.Extensions;
+using LibraryProject.API.Settings;
+
+namespace LibraryProject.API
+{
+    public class Startup
+    {
+        public IConfiguration Configuration { get; }
+        private readonly PoliciesConfig policiesConfig = new();
+
+        public Startup(IWebHostEnvironment env)
+        {
+            var basePath = $"{env.ContentRootPath}/AppSettings";
+
+            Configuration = BuildConfig(basePath, env.EnvironmentName, "");
+            Configuration.GetSection(nameof(PoliciesConfig)).Bind(policiesConfig);
+        }
+
+        private static IConfiguration BuildConfig(string basePath, string environmentName, string name)
+        {
+            var path = string.IsNullOrEmpty(name) ? basePath : $"{basePath}/{name}";
+            var file = string.IsNullOrEmpty(name) ? $"appsettings.{environmentName}.json" : $"appsettings.{name}.{environmentName}.json";
+
+            return new ConfigurationBuilder()
+                .SetBasePath(path)
+                .AddJsonFile(file, optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+        }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
+            // Swagger
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
+            // Policies CORS
+            services.ConfigurePolicies(policiesConfig);
+
+            // Configure db
+            services.ConfigureDb(Configuration);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AssignmentAPI v1"));
+            }
+
+            app.UsePolicies(policiesConfig);
+            //app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            // Security
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+    }
+}
