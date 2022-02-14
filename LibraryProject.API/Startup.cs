@@ -33,6 +33,9 @@ namespace LibraryProject.API
         {
             services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
+            // Add services to the container.
+            services.AddControllers();
+
             // Swagger
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
@@ -60,8 +63,8 @@ namespace LibraryProject.API
             app.UseRouting();
 
             // Security
-            app.UseAuthentication();
-            app.UseAuthorization();
+            //app.UseAuthentication();
+            // app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

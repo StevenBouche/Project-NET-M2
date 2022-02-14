@@ -1,8 +1,10 @@
-﻿namespace LibraryProject.Domain.Common
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace LibraryProject.Domain.Common
 {
     public class AuditableEntity
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public DateTimeOffset UpdatedAt { get; set; }
     }

@@ -1,11 +1,12 @@
 using LibraryProject.API;
+using LibraryProject.API.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var startup = new Startup(builder.Environment);
 
-/*Log.Logger = new LoggerConfiguration()
+Log.Logger = new LoggerConfiguration()
          .ReadFrom.Configuration(startup.Configuration)
          .WriteTo.Console(Serilog.Events.LogEventLevel.Debug, outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} {Level:u3}] {Message:lj} <{ThreadId}><{ThreadName}> {NewLine}{Exception}")
          .MinimumLevel.Debug()
@@ -13,7 +14,7 @@ var startup = new Startup(builder.Environment);
          .Enrich.WithThreadId()
          .CreateLogger();
 
-builder.Host.UseSerilog();*/
+builder.Host.UseSerilog();
 
 startup.ConfigureServices(builder.Services);
 
@@ -21,7 +22,7 @@ var app = builder.Build();
 
 startup.Configure(app, app.Environment);
 
-//app.SeedData();
+app.SeedData();
 
 try
 {

@@ -2,8 +2,16 @@
 {
     public class LibraryContextSeed
     {
-        public static async Task SeedSampleDataAsync(LibraryContext context)
+        private readonly LibraryContext Context;
+
+        public LibraryContextSeed(LibraryContext context)
         {
+            Context = context;
+        }
+
+        public void SeedData()
+        {
+            //Context.SaveChanges();
         }
     }
 }
