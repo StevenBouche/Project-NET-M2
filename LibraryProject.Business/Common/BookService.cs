@@ -24,7 +24,7 @@ namespace LibraryProject.Business.Common
 
         public PaginationResultDto GetAll(PaginationDto pagination)
         {
-            var filter = _context.Books.AsNoTracking();
+            var filter = _context.Books.AsQueryable();
 
             if (pagination.IdGenre != null)
             {
