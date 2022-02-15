@@ -25,5 +25,15 @@ namespace LibraryProject.API.Controllers.Common
             });
         }
 
+        [HttpGet("search")]
+        [ProducesResponseType(typeof(PaginationResultDto), 200)]
+        public  ActionResult Get([FromQuery] PaginationDto data)
+        {
+            return TryExecute<ActionResult>( () =>
+            {
+                return Ok(_bookService.GetAll(data));
+            });
+        }
+
     }
 }

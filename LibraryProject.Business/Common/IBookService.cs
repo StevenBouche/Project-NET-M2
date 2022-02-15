@@ -10,5 +10,7 @@ namespace LibraryProject.Business.Common
     public interface IBookService
     {
         public Task<BookDetailsDto> GetByIdAsync(int id);
+
+        public PaginationResultDto GetAll(PaginationDto pagination);
     }
 }
