@@ -15,5 +15,6 @@ namespace LibraryProject.Business.Dto.Genres
 
         [JsonProperty("updatedAt")]
         public DateTimeOffset UpdatedAt { get; set; }
+
     }
 }

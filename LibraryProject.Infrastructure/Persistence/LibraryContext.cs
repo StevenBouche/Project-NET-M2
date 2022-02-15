@@ -29,12 +29,24 @@ namespace LibraryProject.Infrastructure.Persistence
                 .WithMany(c => c.BookGenres)
                 .HasForeignKey(bc => bc.GenreId);
             });
+
+            modelBuilder.Entity<Genre>(g =>
+            {
+                g.HasIndex(genre => genre.Name).IsUnique();
+            });
+
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             SetAuditOnEntries();
             return base.SaveChangesAsync(cancellationToken);
+        }
+
+        public override int SaveChanges()
+        {
+            SetAuditOnEntries();
+            return base.SaveChanges();
         }
 
         internal void SetAuditOnEntries()
