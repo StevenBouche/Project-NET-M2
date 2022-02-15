@@ -1,4 +1,5 @@
 ﻿using LibraryProject.Business.Exceptions.Common;
+using LibraryProject.Business.Extensions;
 using System.ComponentModel;
 using System.Net;
 
@@ -17,7 +18,7 @@ namespace LibraryProject.Business.Exceptions
         public override int BusinessErrorCode => (int)BookType;
 
         public BookException(BookBusinessExceptionTypes type, string message)
-            : base(BusinessExceptionTypes.BOOK, message)
+            : base(BusinessExceptionTypes.BOOK, $"{type.ToDescriptionString()} : {message}")
         {
             BookType = type;
         }
