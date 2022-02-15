@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.API", "Libra
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D2CB3658-814B-49D3-968B-8C6105A642CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Business.Dto", "..\LibraryProject.Business.Dto\LibraryProject.Business.Dto.csproj", "{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Business.Dto", "LibraryProject.Business.Dto\LibraryProject.Business.Dto.csproj", "{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
