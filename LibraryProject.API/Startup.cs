@@ -1,5 +1,6 @@
 ﻿using LibraryProject.API.Extensions;
 using LibraryProject.API.Settings;
+using LibraryProject.Business.Common;
 
 namespace LibraryProject.API
 {
@@ -43,6 +44,9 @@ namespace LibraryProject.API
             services.ConfigureMapper();
             services.ConfigurePolicies(policiesConfig);
             services.ConfigureDb(Configuration);
+
+            // Services for controller
+            services.AddTransient<IBookService, BookService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

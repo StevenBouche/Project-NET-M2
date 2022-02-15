@@ -6,7 +6,7 @@ namespace LibraryProject.Business.Exceptions
 {
     public enum BookBusinessExceptionTypes
     {
-        [Description("Cannot find book")]
+        [Description("Livre non référencé")]
         BOOK_NOT_FOUND
     }
 

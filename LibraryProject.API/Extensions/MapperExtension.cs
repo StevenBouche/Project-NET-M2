@@ -11,8 +11,9 @@ namespace LibraryProject.API.Extensions
         {
             var configuration = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<Book, BookDto>().ForMember(e => e.Genres, e => e.MapFrom(t => t.BookGenres.Select(genre => genre.Genre)));
                 cfg.CreateMap<Genre, GenreDto>();
+                cfg.CreateMap<Book, BookDto>().ForMember(e => e.Genres, e => e.MapFrom(t => t.BookGenres.Select(genre => genre.Genre)));
+                cfg.CreateMap<Book, BookDetailsDto>().ForMember(e => e.Genres, e => e.MapFrom(t => t.BookGenres.Select(genre => genre.Genre)));
             });
 
             configuration.AssertConfigurationIsValid();
