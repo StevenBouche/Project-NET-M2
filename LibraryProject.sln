@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Business.Dto
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.API.Client", "LibraryProject.API.Client\LibraryProject.API.Client.csproj", "{6A446813-62B6-4CA9-9DAC-3B565F4D425C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.ClientUI", "LibraryProject.ClientUI\LibraryProject.ClientUI.csproj", "{CD2B2602-057A-4AE2-A782-08B4513F7BA7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.ClientUI", "LibraryProject.ClientUI\WPF.Reader.csproj", "{CD2B2602-057A-4AE2-A782-08B4513F7BA7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
