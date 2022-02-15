@@ -1,19 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using LibraryProject.Business.Dto.Books;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace LibraryProject.ClientUI
+namespace WPF.Reader
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,6 +13,22 @@ namespace LibraryProject.ClientUI
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public delegate void MyDelegate(string msg);
+        MyDelegate del = new MyDelegate((string msg) =>
+        {
+            Trace.WriteLine("msg: " + msg);
+        });
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Task.Run(async () =>
+            {
+                BookDetailsDto book = await LibraryProject.API.Client.API.findById(1);
+                del.Invoke(book.Name);
+            });
+            
         }
     }
 }
