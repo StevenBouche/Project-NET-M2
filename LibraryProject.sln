@@ -13,11 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.API", "Libra
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{D2CB3658-814B-49D3-968B-8C6105A642CF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.WebUI.Server", "LibraryProject.WebUI\Server\LibraryProject.WebUI.Server.csproj", "{F9AD5BAB-458A-4E95-B5A0-03EEC283E9C2}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.WebUI.Client", "LibraryProject.WebUI\Client\LibraryProject.WebUI.Client.csproj", "{22A5E933-8D1A-483B-B9A9-C4446C8C2F78}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.WebUI.Shared", "LibraryProject.WebUI\Shared\LibraryProject.WebUI.Shared.csproj", "{C75543F8-89C0-4CA1-93DF-C51580AB2461}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.Business.Dto", "..\LibraryProject.Business.Dto\LibraryProject.Business.Dto.csproj", "{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}"
 EndProject
@@ -47,18 +43,10 @@ Global
 		{D2CB3658-814B-49D3-968B-8C6105A642CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D2CB3658-814B-49D3-968B-8C6105A642CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D2CB3658-814B-49D3-968B-8C6105A642CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F9AD5BAB-458A-4E95-B5A0-03EEC283E9C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F9AD5BAB-458A-4E95-B5A0-03EEC283E9C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F9AD5BAB-458A-4E95-B5A0-03EEC283E9C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F9AD5BAB-458A-4E95-B5A0-03EEC283E9C2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{22A5E933-8D1A-483B-B9A9-C4446C8C2F78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{22A5E933-8D1A-483B-B9A9-C4446C8C2F78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22A5E933-8D1A-483B-B9A9-C4446C8C2F78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22A5E933-8D1A-483B-B9A9-C4446C8C2F78}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C75543F8-89C0-4CA1-93DF-C51580AB2461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C75543F8-89C0-4CA1-93DF-C51580AB2461}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C75543F8-89C0-4CA1-93DF-C51580AB2461}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C75543F8-89C0-4CA1-93DF-C51580AB2461}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA65D7D2-4945-45D8-A7A2-C3CAF072B2B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
