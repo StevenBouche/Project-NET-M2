@@ -37,7 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\LibraryProject.Business.Dto\LibraryProject.Business.Dto.csproj" />
     <ProjectReference Include="..\LibraryProject.Business\LibraryProject.Business.csproj" />
     <ProjectReference Include="..\LibraryProject.Infrastructure\LibraryProject.Infrastructure.csproj" />
   </ItemGroup>
