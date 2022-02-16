@@ -11,19 +11,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ListBooks">
     <StackPanel>
-
-        <Label Content="{Binding Path=TestString}" Height="93" Background="#FFFF1010" Foreground="Black"/>
-
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <ListBox Grid.Column="0" ItemsSource="{Binding Path=Books}" ItemTemplate="{StaticResource ResourceKey=bookListDataTemplate}" x:Name="bookList" />
-            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-        </Grid>
-
+        <ListBox Grid.Column="0" ItemsSource="{Binding Path=Books}" ItemTemplate="{DynamicResource ResourceKey=bookDataTemplate}" x:Name="Books" />
     </StackPanel>
 </Page>
 
