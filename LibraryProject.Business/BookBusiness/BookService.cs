@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryProject.Business.Common
+namespace LibraryProject.Business.BookBusiness
 {
     public class BookService : IBookService
     {
@@ -33,7 +33,7 @@ namespace LibraryProject.Business.Common
 
             if (!string.IsNullOrWhiteSpace(pagination.AuthorName))
             {
-                 filter = filter.Where(entity => entity.Author.Contains(pagination.AuthorName));
+                filter = filter.Where(entity => entity.Author.Contains(pagination.AuthorName));
             }
 
             if (!string.IsNullOrWhiteSpace(pagination.Title))
@@ -46,9 +46,10 @@ namespace LibraryProject.Business.Common
                 .Skip((pagination.Page - 1) * pagination.PageSize)
                 .Take(pagination.PageSize);
 
-            PaginationResultDto paginationResultDto = new PaginationResultDto() { 
-                Total=filter.Count(), 
-                TotalPages= pageEntity.Count(),
+            PaginationResultDto paginationResultDto = new PaginationResultDto()
+            {
+                Total = filter.Count(),
+                TotalPages = pageEntity.Count(),
                 Books = _mapper.Map<List<BookDto>>(pageEntity.ToList())
             };
 
@@ -57,9 +58,9 @@ namespace LibraryProject.Business.Common
 
         public async Task<BookDetailsDto> GetByIdAsync(int id)
         {
-            var entity = await _context.Books.Where(book =>  book.Id == id).FirstOrDefaultAsync();
+            var entity = await _context.Books.Where(book => book.Id == id).FirstOrDefaultAsync();
 
-            if(entity == null)
+            if (entity == null)
             {
                 throw new BookException(BookBusinessExceptionTypes.BOOK_NOT_FOUND, $"avec l'identifiant : {id}");
             }
