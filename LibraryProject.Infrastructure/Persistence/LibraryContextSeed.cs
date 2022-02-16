@@ -17,24 +17,60 @@ namespace LibraryProject.Infrastructure.Persistence
             {
                 new Book()
                 {
-                    Name = "Livre1",
-                    Author = "Moi",
-                    Price = 1,
+                    Name = "Livre_1",
+                    Author = "Tata",
+                    Price = 10,
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
                 },
                 new Book()
                 {
-                    Name = "Livre2",
-                    Author = "Moi",
-                    Price = 2,
+                    Name = "Livre_2",
+                    Author = "Toto",
+                    Price = 20,
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
-                }
+                },
+                new Book()
+                {
+                    Name = "Livre_3",
+                    Author = "Titi",
+                    Price = 30,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                },
+                new Book()
+                {
+                    Name = "Livre_4",
+                    Author = "Tutu",
+                    Price = 40,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                },
+                new Book()
+                {
+                    Name = "Livre_5",
+                    Author = "Tete",
+                    Price = 50,
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                },
             };
 
             List<Genre> genres = new List<Genre>()
             {
+                new Genre()
+                {
+                    Name="Polar",
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                },
+                new Genre()
+                {
+                    Name="Roman",
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                },
                 new Genre()
                 {
                     Name="SF",
@@ -43,7 +79,13 @@ namespace LibraryProject.Infrastructure.Persistence
                 },
                 new Genre()
                 {
-                    Name="SFF",
+                    Name="Thriller",
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                },
+                new Genre()
+                {
+                    Name="Essai",
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
                 }
@@ -61,7 +103,10 @@ namespace LibraryProject.Infrastructure.Persistence
 
             Context.SaveChanges();
 
-            AddUniqueBookGenre(genres[0], books[0]);
+            for(int i = 0; i < genres.Count; i++)
+            {
+                AddUniqueBookGenre(genres[i], books[i]);
+            }
 
             Context.SaveChanges();
 
