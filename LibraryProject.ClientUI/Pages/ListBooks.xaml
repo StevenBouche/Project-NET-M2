@@ -20,7 +20,7 @@
                 <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <ListBox Grid.Column="0" ItemsSource="{Binding Path=Books}"/>
+            <ListBox Grid.Column="0" ItemsSource="{Binding Path=Books}" ItemTemplate="{StaticResource ResourceKey=bookListDataTemplate}" x:Name="bookList" />
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
         </Grid>
 
