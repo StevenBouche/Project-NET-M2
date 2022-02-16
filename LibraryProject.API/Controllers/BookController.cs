@@ -47,5 +47,16 @@ namespace LibraryProject.API.Controllers.Common
             });
         }
 
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        public Task<ActionResult> Delete(int id)
+        {
+            return TryExecuteAsync<ActionResult>( async () =>
+            {
+                await _bookService.DeleteOneBook(id);
+                return Ok();
+            });
+        }
+
     }
 }
