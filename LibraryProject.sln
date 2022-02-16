@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.ClientUI", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.API.Client", "LibraryProject.API.Client\LibraryProject.API.Client.csproj", "{2577ABC7-7E19-4434-A70F-120D32364A60}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.WebSocket", "LibraryProject.WebSocket\LibraryProject.WebSocket.csproj", "{672F856A-BB31-4940-BAEA-EFB6D6836F7C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{2577ABC7-7E19-4434-A70F-120D32364A60}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2577ABC7-7E19-4434-A70F-120D32364A60}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2577ABC7-7E19-4434-A70F-120D32364A60}.Release|Any CPU.Build.0 = Release|Any CPU
+		{672F856A-BB31-4940-BAEA-EFB6D6836F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{672F856A-BB31-4940-BAEA-EFB6D6836F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{672F856A-BB31-4940-BAEA-EFB6D6836F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{672F856A-BB31-4940-BAEA-EFB6D6836F7C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
