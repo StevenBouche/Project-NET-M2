@@ -20,18 +20,18 @@ namespace WPF.Reader.ViewModel
         // n'oublier pas faire de faire le binding dans ListBook.xaml !!!!
         public ObservableCollection<BookDetailsDto> Books { get; set; } = new ObservableCollection<BookDetailsDto>();
 
-        public string testString { get; set; }
+        public string TestString { get; set; }
 
         public ListBook()
         {
-            testString = "ok";
+            TestString = "ok";
             Task.Run(async () =>
             {
                 BookDetailsDto book = await LibraryProject.API.Client.API.findById(1);
                 Trace.WriteLine("get by id: " + book.Name + book.Author);
                 //Books.Add(book);
                 Application.Current.Dispatcher.Invoke(() => { Books.Add(book); });
-                testString = "ko";
+                TestString = "ko";
             });
 
             ItemSelectedCommand = new RelayCommand(book => { /* the livre devrais etre dans la variable book */ });

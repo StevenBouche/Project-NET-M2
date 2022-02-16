@@ -1,4 +1,5 @@
 ﻿<Page x:Class="WPF.Reader.Pages.ReadBook"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,6 +12,13 @@
       Title="ReadBook">
     <Page.Resources>
         <vm:Navigator x:Key="navigator" />
+        <Style TargetType="{x:Type Border}" x:Key="pageBorder">
+            <Setter Property="Background" Value="WhiteSmoke" />
+            <Setter Property="Width" Value="100" />
+            <Setter Property="Height" Value="150" />
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="BorderThickness" Value="1" />
+        </Style>
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -20,9 +28,42 @@
         </Grid.RowDefinitions>
         <!-- On aimerais bien avoir le tire du livre en entête -->
 
+        <Grid>
+            <materialDesign:Card Padding="32" Margin="16">
+                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Test" Background="White"/>
+            </materialDesign:Card>
+        </Grid>
+
+        <Grid Margin="92,16,400,18" Grid.Row="1" Grid.RowSpan="2">
+            <materialDesign:Card Padding="32" Margin="16">
+                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Test" Background="White"/>
+            </materialDesign:Card>
+        </Grid>
+
+        <Grid Margin="400,16,92,18" Grid.Row="1" Grid.RowSpan="2">
+            <materialDesign:Card Padding="32" Margin="16">
+                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Test" Background="White"/>
+            </materialDesign:Card>
+        </Grid>
+
         <!-- Ainsi que le contenu du livre ! -->
-        
-        <Button Grid.Row="2" Command="{Binding Path=GoBack, Source={StaticResource ResourceKey=navigator}}" CommandParameter="LIST" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Center" Width="200" Content="Retourner au details" Margin="0,0,0,27"/>
+
+        <Button Grid.Row="2" Command="{Binding Path=GoBack, Source={StaticResource ResourceKey=navigator}}" CommandParameter="LIST" Height="30" VerticalAlignment="Top" HorizontalAlignment="Center" Width="200" Content="Retourner au details" Margin="0,50,0,0"/>
+
+        <Button Content="Page suivante" x:Name="btnNext" RenderTransformOrigin="0.594,0.618" Margin="680,48,0,0" Grid.Row="2">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="ButtonBase.Click">
+
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
+        <Button Content="Page precedente" x:Name="btnPrevious" RenderTransformOrigin="0.594,0.618" Margin="0,48,661,0" Grid.Row="2">
+            <Button.Triggers>
+                <EventTrigger RoutedEvent="ButtonBase.Click">
+
+                </EventTrigger>
+            </Button.Triggers>
+        </Button>
     </Grid>
 </Page>
 

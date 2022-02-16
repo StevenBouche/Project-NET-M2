@@ -12,7 +12,7 @@
       Title="ListBooks">
     <StackPanel>
 
-        <Label Content="{Binding Path=testString}" Height="93" Background="#FFFF1010"/>
+        <Label Content="{Binding Path=TestString}" Height="93" Background="#FFFF1010" Foreground="Black"/>
 
         <Grid>
             <Grid.ColumnDefinitions>

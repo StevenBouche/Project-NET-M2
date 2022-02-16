@@ -6,14 +6,13 @@
         xmlns:local="clr-namespace:WPF.Reader"
         xmlns:model="clr-namespace:WPF.Reader.ViewModel" d:DataContext="{d:DesignInstance Type=model:Navigator, IsDesignTimeCreatable=True}"
         mc:Ignorable="d"
-        DataContext="{DynamicResource navigator}"
-    Title="MainWindow" Height="700" Width="800" Background="{DynamicResource MaterialDesignDarkBackground}">
+        DataContext="{DynamicResource navigator}" Title="MainWindow" Height="700" Width="800" Background="{DynamicResource MaterialDesignDarkBackground}">
     <Window.Resources>
         <model:Navigator x:Key="navigator" />
     </Window.Resources>
     <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right" >
-            <Button Command="{Binding GoToHome}" Width="162" Content="Accueil" Click="Button_Click"/>
+            <Button Command="{Binding GoToHome}" Width="162" Content="Accueil" Click="Button_Click" Cursor="Hand"/>
         </StackPanel>
         <Label DockPanel.Dock="Top" Content="Library system" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="30px"/>
         <ContentPresenter  Content="{Binding Path=Frame}" x:Name="Navigation"/>
