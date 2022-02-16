@@ -1,27 +1,57 @@
 ﻿@page "/library"
 @using Blazorise.DataGrid
 @using LibraryProject.Business.Dto.Books
+@using LibraryProject.Business.Dto.Genres
 @using LibraryProject.WebUI.Services
+@using Blazorise.RichTextEdit
 
 <h3>Library</h3>
 
 <div class="row">
-    <div class="col-md-6">
-        Name Filter:
-        <TextEdit @bind-Text="@NameFilter"></TextEdit>
-    </div>
-    <div class="col-md-6">
-        Author name Filter:
-        <TextEdit @bind-Text="@AuthorNameFilter"></TextEdit>
-    </div>
+    <Fields>
+        <!-- Name Filter -->
+        <div class="col-md-3">
+            <Field>
+                <FieldLabel>Book title :</FieldLabel>
+                <FieldBody>
+                    <TextEdit @bind-Text="@TitleFilter" Placeholder="Title filter"></TextEdit>
+                </FieldBody>
+            </Field>
+        </div>
+        <!-- Author name filter Filter -->
+        <div class="col-md-3">
+            <Field>
+                <FieldLabel>Author name :</FieldLabel>
+                <FieldBody>
+                    <TextEdit @bind-Text="@AuthorNameFilter" Placeholder="Author name filter"></TextEdit>
+                </FieldBody>
+            </Field>
+        </div>
+        <!-- Genre multiple selector -->
+        <div class="col-md-3">
+            <Field>
+                <FieldLabel>Genre :</FieldLabel>
+                <FieldBody>
+                     <Select TValue="int?" SelectedValue="@GenreIdFilter">
+                        <SelectItem Value="0">All</SelectItem>
+                        @foreach (var item in genres)
+                        {
+                            <SelectItem Value="@item.Id">@item.Name</SelectItem>
+                        }
+                    </Select>
+                </FieldBody>
+            </Field>
+        </div>
+    </Fields>
 </div>
 
+<!-- Table -->
 <DataGrid TItem="BookDto"
-          Data="@books"
+          Data="@PaginationResult.Books"
           @bind-SelectedRow="@selectedBook"
           ReadData="@OnReadData"
-          TotalItems="@Total"
-          PageSize="@PageSize"
+          TotalItems="@PaginationResult.Total"
+          PageSize="@Pagination.PageSize"
           ShowPager
           Editable
           CommandMode="DataGridCommandMode.ButtonRow"
@@ -41,33 +71,139 @@
         <Button Color="Color.Success" Clicked="context.NewCommand.Clicked">New</Button>
         <Button Color="Color.Primary" Disabled="(selectedBook is null)" Clicked="context.EditCommand.Clicked">Edit</Button>
         <Button Color="Color.Danger" Disabled="(selectedBook is null)" Clicked="@OnClickDelete(context.DeleteCommand)">Delete</Button>
-        <Button Color="Color.Link" Clicked="context.ClearFilterCommand.Clicked">Clear Filter</Button>
     </ButtonRowTemplate>
+    <EmptyTemplate>
+        <div class="box">
+            No books were found!
+        </div>
+    </EmptyTemplate>
 </DataGrid>
 
 @if (selectedBook != null)
 {
-    <h3>Book details</h3>
+    <RichTextEdit @ref="richTextEditRef"
+              Theme="RichTextEditTheme.Snow"
+              ContentChanged="@OnContentChanged"
+              PlaceHolder="Type your post here..."
+              ReadOnly="@readOnly"
+              SubmitOnEnter="false"
+              EnterPressed="@OnSave"
+              ToolbarPosition="Placement.Bottom">
+        <Editor>My example content</Editor>
+        <Toolbar>
+            <RichTextEditToolbarGroup>
+                <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
+                <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
+                <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
+                    <RichTextEditToolbarSelectItem Value="small" />
+                    <RichTextEditToolbarSelectItem Selected="true" />
+                    <RichTextEditToolbarSelectItem Value="large" />
+                    <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
+                </RichTextEditToolbarSelect>
+                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
+                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
+            </RichTextEditToolbarGroup>
+            <!-- Custom toolbar content -->
+        <RichTextEditToolbarGroup Float="Float.End">
+                <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Icon Name="IconName.InfoCircle" /></Button>
+                <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
+            </RichTextEditToolbarGroup>
+        </Toolbar>
+    </RichTextEdit>
 }
 
 @code {
 
+    #region services
+
     [Inject]
-    public BookService service { get; set; }
-    private List<BookDto> books { get; set; } = new();
+    public BookService serviceBook { get; set; }
+    [Inject]
+    public GenreService serviceGenre { get; set; }
+
+    #endregion services
+
+    #region data
+
+    public List<GenreDto> genres { get; set; } = new();
     private BookDto? selectedBook { get; set; } = null;
 
-    private int Total { get; set; } = 0;
-    private int PageSize { get; set; } = 1;
+    #endregion data
 
-    private string NameFilter { get; set; } = string.Empty;
-    private string AuthorNameFilter { get; set; } = string.Empty;
+    #region pagination
+
+    public int GenreIdFilter {
+        get => Pagination.IdGenre is null ? 0 : (int)Pagination.IdGenre;
+        set => Pagination.IdGenre = value == 0 ? null : value; 
+    }
+
+    public string AuthorNameFilter
+    {
+        get => Pagination.AuthorName is null ? string.Empty : Pagination.AuthorName;
+        set => Pagination.AuthorName = value;
+    }
+
+    public string TitleFilter
+    {
+        get => Pagination.Title is null ? string.Empty : Pagination.Title;
+        set => Pagination.Title = value;
+    }
+
+    private PaginationDto Pagination = new()
+        {
+            Page = 1,
+            PageSize = 10,
+            IdGenre = null,
+            AuthorName = string.Empty,            
+            Title = string.Empty
+        };
+
+    private PaginationResultDto PaginationResult = new()
+        {
+            Total = 0,
+            TotalPages = 0,
+            Books = new List<BookDto>()
+        };
+    #endregion pagination
+
+    #region filter
+
+    List<string> multipleSelectioValues = new();
+    List<string> multipleSelectionTexts = new();
+    private bool multipleAutocompleteFreeTyping = false;
+
+    #endregion filter
+
+    #region edit
+
+    protected RichTextEdit richTextEditRef;
+    protected bool readOnly;
+    protected string contentAsHtml;
+    protected string contentAsDeltaJson;
+    protected string contentAsText;
+    protected string savedContent;
+
+    #endregion edit
 
     protected override async Task OnInitializedAsync()
     {
-        books = service.GetBooks();
+        await GetBookPaginate();
+        genres = serviceGenre.GetGenres();
         await base.OnInitializedAsync();
     }
+
+    #region paginationMethod
+
+    private async Task GetBookPaginate()
+    {
+        var result = await serviceBook.GetPaginateBooksAsync(Pagination);
+        if(result != null)
+        {
+            PaginationResult = result;
+        }
+    }
+
+    #endregion paginationMethod
 
     private EventCallback OnClickDelete(DeleteCommandContext<BookDto> command)
     {
@@ -76,7 +212,7 @@
 
     private async Task OnReadData(DataGridReadDataEventArgs<BookDto> e)
     {
-        if (!e.CancellationToken.IsCancellationRequested)
+       /* if (!e.CancellationToken.IsCancellationRequested)
         {
             List<BookDto> response = null;
 
@@ -84,7 +220,7 @@
             //var response = await Http.GetJsonAsync<Employee[]>( $"some-api/employees?page={e.Page}&pageSize={e.PageSize}" );
             if (e.ReadDataMode is DataGridReadDataMode.Paging)
                 //response = (await EmployeeData.GetDataAsync()).Skip( ( e.Page - 1 ) * e.PageSize ).Take( e.PageSize ).ToList();
-                response = service.GetBooks();
+                response = serviceBook.GetBooks();
             else
                 throw new Exception("Unhandled ReadDataMode");
 
@@ -93,6 +229,23 @@
                 Total = response.Count;
                 books = new List<BookDto>(response);
             }
-        }
+        }*/
     }
+
+    #region methodEdit
+
+    public async Task OnContentChanged()
+    {
+        contentAsHtml = await richTextEditRef.GetHtmlAsync();
+        contentAsDeltaJson = await richTextEditRef.GetDeltaAsync();
+        contentAsText = await richTextEditRef.GetTextAsync();
+    }
+
+    public async Task OnSave()
+    {
+        savedContent = await richTextEditRef.GetHtmlAsync();
+        await richTextEditRef.ClearAsync();
+    }
+
+    #endregion methodEdit
 }

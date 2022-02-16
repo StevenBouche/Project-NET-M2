@@ -11,7 +11,7 @@ namespace LibraryProject.WebUI.Services
             new GenreDto() { Id = 3, Name = "Genre3", CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow }
         };
 
-        public List<GenreDto> GetBooks()
+        public List<GenreDto> GetGenres()
         {
             return Genres;
         }
