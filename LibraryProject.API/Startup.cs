@@ -56,7 +56,7 @@ namespace LibraryProject.API
             services.AddFluentValidation(x =>
             {
                 x.DisableDataAnnotationsValidation = true;
-                x.RegisterValidatorsFromAssemblyContaining<GenreDtoValidator>();
+                x.RegisterValidatorsFromAssemblyContaining<GenreFormCreateDtoValidator>();
             });
         }
 

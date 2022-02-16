@@ -22,6 +22,4 @@ namespace LibraryProject.Business.Validators.GenreValidators
             return name.All(Char.IsLetter);
         }
     }
-
-   
 }
