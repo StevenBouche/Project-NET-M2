@@ -58,6 +58,7 @@ namespace LibraryProject.API.Controllers.Common
             return TryExecuteAsync<ActionResult>( async () =>
             {
                 await _bookService.DeleteOneBook(id);
+                await _hub.OnDeletedBook(id);
                 return Ok();
             });
         }

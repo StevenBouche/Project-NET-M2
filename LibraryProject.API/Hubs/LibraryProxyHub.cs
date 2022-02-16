@@ -17,5 +17,10 @@ namespace LibraryProject.API.Hubs
         {
             return _hub.Clients.All.SendAsync("OnCreatedBook", book);
         }
+
+        public Task OnDeletedBook(int id)
+        {
+            return _hub.Clients.All.SendAsync("OnDeletedBook", id);
+        }
     }
 }
