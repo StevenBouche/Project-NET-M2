@@ -35,5 +35,16 @@ namespace LibraryProject.API.Controllers.Common
             });
         }
 
+        [HttpPost]
+        [ProducesResponseType(typeof(BookDetailsDto), 201)]
+        public async Task<ActionResult> Post([FromBody] BookFormCreateDto data)
+        {
+            return await TryExecuteAsync<ActionResult>(async () =>
+            {
+                var resultDto = await _bookService.PostNewBookAsync(data);
+                return Created($"/api/book/{resultDto.Id}", resultDto);
+            });
+        }
+
     }
 }

@@ -12,5 +12,7 @@ namespace LibraryProject.Business.BookBusiness
         public Task<BookDetailsDto> GetByIdAsync(int id);
 
         public PaginationResultDto GetAll(PaginationDto pagination);
+
+        public Task<BookDetailsDto> PostNewBookAsync(BookFormCreateDto bookFormCreateDto);
     }
 }

@@ -8,7 +8,9 @@ namespace LibraryProject.Business.Exceptions
     public enum BookBusinessExceptionTypes
     {
         [Description("Livre non référencé")]
-        BOOK_NOT_FOUND
+        BOOK_NOT_FOUND,
+        [Description("Genre non référencé")]
+        GENRE_NOT_FOUND
     }
 
     public class BookException : BusinessException
@@ -28,6 +30,7 @@ namespace LibraryProject.Business.Exceptions
             return BookType switch
             {
                 BookBusinessExceptionTypes.BOOK_NOT_FOUND => HttpStatusCode.NotFound,
+                BookBusinessExceptionTypes.GENRE_NOT_FOUND => HttpStatusCode.NotFound,
                 _ => HttpStatusCode.BadRequest
             };
         }
