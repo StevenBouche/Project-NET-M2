@@ -28,7 +28,7 @@ namespace WPF.Reader.ViewModel
             Task.Run(async () =>
             {
                 BookDetailsDto book = await LibraryProject.API.Client.API.findById(1);
-                Trace.WriteLine("get by id: " + book.Name + book.Author);
+                Trace.WriteLine("get by id: " + book.Genres);
                 //Books.Add(book);
                 Application.Current.Dispatcher.Invoke(() => { Books.Add(book); });
                 TestString = "ko";

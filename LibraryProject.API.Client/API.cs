@@ -11,7 +11,7 @@ namespace LibraryProject.API.Client
 
         public static async Task<BookDetailsDto?> findById(int id)
         {
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
             try
             {   
                 HttpResponseMessage response = await client.GetAsync($"{API_URL}/book/{id}");
