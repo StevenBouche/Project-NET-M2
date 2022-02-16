@@ -1,4 +1,4 @@
-﻿using LibraryProject.Business.Common;
+﻿using LibraryProject.Business.BookBusiness;
 using LibraryProject.Business.Dto.Books;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +7,7 @@ namespace LibraryProject.API.Controllers.Common
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class BookController : LibraryBaseController
     {
         private readonly IBookService _bookService;
@@ -32,6 +33,17 @@ namespace LibraryProject.API.Controllers.Common
             return TryExecute<ActionResult>( () =>
             {
                 return Ok(_bookService.GetAll(data));
+            });
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(BookDetailsDto), 201)]
+        public async Task<ActionResult> Post([FromBody] BookFormCreateDto data)
+        {
+            return await TryExecuteAsync<ActionResult>(async () =>
+            {
+                var resultDto = await _bookService.PostNewBookAsync(data);
+                return Created($"/api/book/{resultDto.Id}", resultDto);
             });
         }
 

@@ -1,7 +1,13 @@
-﻿using LibraryProject.API.Extensions;
+﻿using FluentValidation.AspNetCore;
+using LibraryProject.API.Extensions;
 using LibraryProject.API.Settings;
-using LibraryProject.Business.Common;
+using LibraryProject.Business.BookBusiness;
 using LibraryProject.Business.GenreBusiness;
+using LibraryProject.Business.Validators.GenreValidators;
+using MicroElements.Swashbuckle.FluentValidation;
+using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace LibraryProject.API
 {
@@ -40,8 +46,12 @@ namespace LibraryProject.API
 
             // Swagger
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Library API", Version = "v1" });
+            });
 
+            services.AddFluentValidationRulesToSwagger();
             services.ConfigureMapper();
             services.ConfigurePolicies(policiesConfig);
             services.ConfigureDb(Configuration);
@@ -49,6 +59,13 @@ namespace LibraryProject.API
             // Services for controller
             services.AddTransient<IBookService, BookService>();
             services.AddTransient<IGenreService, GenreService>();
+
+            //Validators
+            services.AddFluentValidation(x =>
+            {
+                x.DisableDataAnnotationsValidation = true;
+                x.RegisterValidatorsFromAssemblyContaining<GenreFormCreateDtoValidator>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,7 +75,7 @@ namespace LibraryProject.API
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "AssignmentAPI v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Library API v1"));
             }
 
             app.UsePolicies(policiesConfig);
@@ -74,6 +91,10 @@ namespace LibraryProject.API
             {
                 endpoints.MapControllers();
             });
+
+            app.UseScopedSwagger();
+
+
         }
     }
 }
