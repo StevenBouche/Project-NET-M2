@@ -1,4 +1,4 @@
-﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows.Input;

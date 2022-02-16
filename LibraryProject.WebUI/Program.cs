@@ -18,6 +18,7 @@ builder.Services.AddBlazorise(options => { options.ChangeTextOnKeyPress = true; 
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<BookService>();
+builder.Services.AddScoped<GenreService>();
 
 var app = builder.Build();
 

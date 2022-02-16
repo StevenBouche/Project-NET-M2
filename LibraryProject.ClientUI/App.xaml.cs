@@ -23,7 +23,6 @@ namespace WPF.Reader
             Ioc.Default.ConfigureServices(
                 new ServiceCollection()
                 .AddSingleton<INavigationService>(new NavigationService(rootFrame))
-                .AddSingleton(new LibraryService())
                 .BuildServiceProvider());
 
             Ioc.Default.GetRequiredService<INavigationService>().Navigate<ListBook>();

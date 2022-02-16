@@ -14,5 +14,7 @@ namespace LibraryProject.Business.BookBusiness
         public PaginationResultDto GetAll(PaginationDto pagination);
 
         public Task<BookDetailsDto> PostNewBookAsync(BookFormCreateDto bookFormCreateDto);
+
+        public Task DeleteOneBook(int id);
     }
 }

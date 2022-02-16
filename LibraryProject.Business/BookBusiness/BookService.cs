@@ -23,6 +23,12 @@ namespace LibraryProject.Business.BookBusiness
             _mapper = mapper;
         }
 
+        public async Task DeleteOneBook(int id)
+        {
+            _context.Books.Remove(await GetBookByIdAsync(id));
+            _context.SaveChanges();
+        }
+
         public PaginationResultDto GetAll(PaginationDto pagination)
         {
             var filter = _context.Books.AsQueryable();
@@ -59,14 +65,21 @@ namespace LibraryProject.Business.BookBusiness
 
         public async Task<BookDetailsDto> GetByIdAsync(int id)
         {
-            var entity = await _context.Books.Include(e => e.BookGenres).SingleOrDefaultAsync(book =>  book.Id == id);
+            var entity = await GetBookByIdAsync(id);
+
+            return _mapper.Map<BookDetailsDto>(entity);
+        }
+
+        private async Task<Book> GetBookByIdAsync(int id)
+        {
+            var entity = await _context.Books.Include(e => e.BookGenres).SingleOrDefaultAsync(book => book.Id == id);
 
             if (entity == null)
             {
                 throw new BookException(BookBusinessExceptionTypes.BOOK_NOT_FOUND, $"avec l'identifiant : {id}");
             }
 
-            return _mapper.Map<BookDetailsDto>(entity);
+            return entity;
         }
 
         public async Task<BookDetailsDto> PostNewBookAsync(BookFormCreateDto bookFormCreateDto)
