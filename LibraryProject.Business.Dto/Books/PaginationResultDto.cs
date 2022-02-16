@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,11 @@ namespace LibraryProject.Business.Dto.Books
 {
     public class PaginationResultDto
     {
-        public List<BookDto> Books;
-        public int Total;
-        public int TotalPages;
+        [JsonProperty("books")]
+        public List<BookDto> Books { get; set; } = new();
+        [JsonProperty("total")]
+        public int Total { get; set; }
+        [JsonProperty("totalPages")]
+        public int TotalPages { get; set; }
     }
 }
