@@ -1,4 +1,5 @@
-﻿using LibraryProject.API.Controllers.Common;
+﻿using FluentValidation.Results;
+using LibraryProject.API.Controllers.Common;
 using LibraryProject.Business.Dto.Books;
 using LibraryProject.Business.Dto.Common;
 using LibraryProject.Business.Dto.Genres;
@@ -9,6 +10,7 @@ namespace LibraryProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class GenreController : LibraryBaseController
     {
         private readonly IGenreService _service;

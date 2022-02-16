@@ -7,6 +7,7 @@ namespace LibraryProject.API.Controllers.Common
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class BookController : LibraryBaseController
     {
         private readonly IBookService _bookService;
