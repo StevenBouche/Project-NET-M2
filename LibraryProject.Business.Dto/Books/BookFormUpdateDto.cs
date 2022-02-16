@@ -1,5 +1,4 @@
-﻿using LibraryProject.Business.Dto.Genres;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Business.Dto.Books
 {
-    public class BookDetailsDto
+    public class BookFormUpdateDto
     {
         [JsonProperty("id")]
         public int Id { get; set; }
-
         [JsonProperty("name")]
         public string Name { get; set; } = string.Empty;
 
@@ -25,13 +23,7 @@ namespace LibraryProject.Business.Dto.Books
         [JsonProperty("content")]
         public string Content { get; set; } = string.Empty;
 
-        [JsonProperty("genres")]
-        public IList<GenreDto> Genres { get; set; } = new List<GenreDto>();
-
-        [JsonProperty("createdAt")]
-        public DateTimeOffset CreatedAt { get; set; }
-
-        [JsonProperty("updatedAt")]
-        public DateTimeOffset UpdatedAt { get; set; }
+        [JsonProperty("genresIds")]
+        public List<int> GenresIds { get; set; } = new();
     }
 }

@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:model="clr-namespace:LibraryProject.Business.Dto.Books;assembly=LibraryProject.Business.Dto">
+    <DataTemplate x:Key="bookDataTemplate" DataType="{x:Type model:BookDto}">
+        <StackPanel VerticalAlignment="Top">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+                <Label HorizontalAlignment="Stretch" Grid.Column="0" Content="{Binding Path=Name}" />
+                <Label HorizontalAlignment="Stretch" Grid.Column="2" Content="{Binding Path=Author}" />
+                <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
+            </Grid>
+        </StackPanel>
+    </DataTemplate>
+
+</ResourceDictionary>

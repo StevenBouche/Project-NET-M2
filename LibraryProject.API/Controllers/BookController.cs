@@ -1,4 +1,5 @@
-﻿using LibraryProject.Business.BookBusiness;
+﻿using LibraryProject.API.Hubs;
+using LibraryProject.Business.BookBusiness;
 using LibraryProject.Business.Dto.Books;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +12,11 @@ namespace LibraryProject.API.Controllers.Common
     public class BookController : LibraryBaseController
     {
         private readonly IBookService _bookService;
-        public BookController(ILogger<LibraryBaseController> logger, IBookService bookService) : base(logger)
+        private readonly LibraryProxyHub _hub;
+        public BookController(ILogger<LibraryBaseController> logger, IBookService bookService, LibraryProxyHub hub) : base(logger)
         {
             _bookService = bookService;
+            _hub = hub;
         }
 
         [HttpGet("{id}")]
@@ -43,7 +46,20 @@ namespace LibraryProject.API.Controllers.Common
             return await TryExecuteAsync<ActionResult>(async () =>
             {
                 var resultDto = await _bookService.PostNewBookAsync(data);
+                await _hub.OnCreatedBook(resultDto);
                 return Created($"/api/book/{resultDto.Id}", resultDto);
+            });
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(string), 200)]
+        public Task<ActionResult> Delete(int id)
+        {
+            return TryExecuteAsync<ActionResult>( async () =>
+            {
+                await _bookService.DeleteOneBook(id);
+                await _hub.OnDeletedBook(id);
+                return Ok();
             });
         }
 

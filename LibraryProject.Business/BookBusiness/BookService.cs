@@ -4,11 +4,6 @@ using LibraryProject.Business.Exceptions;
 using LibraryProject.Domain.Entities;
 using LibraryProject.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LibraryProject.Business.BookBusiness
 {
@@ -21,6 +16,12 @@ namespace LibraryProject.Business.BookBusiness
         {
             _context = context;
             _mapper = mapper;
+        }
+
+        public async Task DeleteOneBook(int id)
+        {
+            _context.Books.Remove(await GetBookByIdAsync(id));
+            _context.SaveChanges();
         }
 
         public PaginationResultDto GetAll(PaginationDto pagination)
@@ -59,14 +60,21 @@ namespace LibraryProject.Business.BookBusiness
 
         public async Task<BookDetailsDto> GetByIdAsync(int id)
         {
-            var entity = await _context.Books.Include(e => e.BookGenres).SingleOrDefaultAsync(book =>  book.Id == id);
+            var entity = await GetBookByIdAsync(id);
+
+            return _mapper.Map<BookDetailsDto>(entity);
+        }
+
+        private async Task<Book> GetBookByIdAsync(int id)
+        {
+            var entity = await _context.Books.Include(e => e.BookGenres).SingleOrDefaultAsync(book => book.Id == id);
 
             if (entity == null)
             {
                 throw new BookException(BookBusinessExceptionTypes.BOOK_NOT_FOUND, $"avec l'identifiant : {id}");
             }
 
-            return _mapper.Map<BookDetailsDto>(entity);
+            return entity;
         }
 
         public async Task<BookDetailsDto> PostNewBookAsync(BookFormCreateDto bookFormCreateDto)

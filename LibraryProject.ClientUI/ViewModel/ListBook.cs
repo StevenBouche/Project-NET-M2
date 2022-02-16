@@ -1,5 +1,6 @@
 ﻿using LibraryProject.Business.Dto.Books;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -18,20 +19,25 @@ namespace WPF.Reader.ViewModel
         public ICommand ItemSelectedCommand { get; set; }
 
         // n'oublier pas faire de faire le binding dans ListBook.xaml !!!!
-        public ObservableCollection<BookDetailsDto> Books { get; set; } = new ObservableCollection<BookDetailsDto>();
+        public ObservableCollection<BookDto> Books { get; set; } = new ObservableCollection<BookDto>();
 
-        public string testString { get; set; }
+        public string TestString { get; set; }
 
         public ListBook()
         {
-            testString = "ok";
+            TestString = "ok";
             Task.Run(async () =>
             {
-                BookDetailsDto book = await LibraryProject.API.Client.API.findById(1);
-                Trace.WriteLine("get by id: " + book.Name + book.Author);
-                //Books.Add(book);
-                Application.Current.Dispatcher.Invoke(() => { Books.Add(book); });
-                testString = "ko";
+                PaginationResultDto result = await LibraryProject.API.Client.API.search(1, 10);
+                List<BookDto> resultBooks = result.Books;
+                Trace.WriteLine("get by id: " + resultBooks.Count);
+
+                Application.Current.Dispatcher.Invoke(() => {
+                    foreach(var book in resultBooks) {
+                        Books.Add(book);
+                    }
+                });
+                TestString = "ko";
             });
 
             ItemSelectedCommand = new RelayCommand(book => { /* the livre devrais etre dans la variable book */ });

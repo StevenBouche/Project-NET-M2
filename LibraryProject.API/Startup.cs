@@ -1,8 +1,10 @@
 ﻿using FluentValidation.AspNetCore;
 using LibraryProject.API.Extensions;
+using LibraryProject.API.Hubs;
 using LibraryProject.API.Settings;
 using LibraryProject.Business.BookBusiness;
 using LibraryProject.Business.GenreBusiness;
+using LibraryProject.Business.Validators.BookValidators;
 using LibraryProject.Business.Validators.GenreValidators;
 using MicroElements.Swashbuckle.FluentValidation;
 using MicroElements.Swashbuckle.FluentValidation.AspNetCore;
@@ -65,7 +67,12 @@ namespace LibraryProject.API
             {
                 x.DisableDataAnnotationsValidation = true;
                 x.RegisterValidatorsFromAssemblyContaining<GenreFormCreateDtoValidator>();
+                x.RegisterValidatorsFromAssemblyContaining<BookFormCreateDtoValidator>();
             });
+
+            //Hub
+            services.AddSignalR();
+            services.AddTransient<LibraryProxyHub>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -90,9 +97,11 @@ namespace LibraryProject.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<LibraryHub>("/libraryhub");
             });
 
             app.UseScopedSwagger();
+
 
 
         }

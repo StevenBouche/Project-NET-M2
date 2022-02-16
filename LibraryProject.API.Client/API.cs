@@ -11,7 +11,7 @@ namespace LibraryProject.API.Client
 
         public static async Task<BookDetailsDto?> findById(int id)
         {
-            Thread.Sleep(3000);
+            Thread.Sleep(1000);
             try
             {   
                 HttpResponseMessage response = await client.GetAsync($"{API_URL}/book/{id}");
@@ -26,7 +26,7 @@ namespace LibraryProject.API.Client
             return null;
         }
 
-        public static async Task<BookDetailsDto?> search(
+        public static async Task<PaginationResultDto?> search(
             int page,
             int pageSize,
             int idGenre = -1,
@@ -37,10 +37,10 @@ namespace LibraryProject.API.Client
             Thread.Sleep(3000);
             try
             {
-                HttpResponseMessage response = await client.GetAsync($"{API_URL}/book/{1}");
+                HttpResponseMessage response = await client.GetAsync($"{API_URL}/book/search?Page={page}&PageSize={pageSize}");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<BookDetailsDto>(responseBody);
+                return JsonConvert.DeserializeObject<PaginationResultDto>(responseBody);
             }
             catch (HttpRequestException e)
             {
