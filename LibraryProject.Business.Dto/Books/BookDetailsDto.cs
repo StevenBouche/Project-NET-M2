@@ -25,7 +25,7 @@ namespace LibraryProject.Business.Dto.Books
         [JsonProperty("content")]
         public string Content { get; set; } = string.Empty;
 
-        [JsonProperty("books")]
+        [JsonProperty("genres")]
         public IList<GenreDto> Genres { get; set; } = new List<GenreDto>();
 
         [JsonProperty("createdAt")]
