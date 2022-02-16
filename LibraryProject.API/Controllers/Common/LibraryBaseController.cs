@@ -1,26 +1,11 @@
-﻿using LibraryProject.Business.Exceptions.Common;
+﻿using LibraryProject.Business.Dto.Common;
+using LibraryProject.Business.Exceptions.Common;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Newtonsoft.Json;
 using System.Net;
 
 namespace LibraryProject.API.Controllers.Common
 {
-    public class ApiErrorResponse
-    {
-        [JsonProperty("statuscode", NullValueHandling = NullValueHandling.Ignore)]
-        public int? StatusCode { get; set; } = null;
-
-        [JsonProperty("message", NullValueHandling = NullValueHandling.Ignore)]
-        public string? Message { get; set; }
-
-        [JsonProperty("serviceErrorCode", NullValueHandling = NullValueHandling.Ignore)]
-        public int? ServiceErrorCode { get; set; } = null;
-
-        [JsonProperty("methodErrorCode", NullValueHandling = NullValueHandling.Ignore)]
-        public int? MethodErrorCode { get; set; } = null;
-    }
-
     public abstract class LibraryBaseController : ControllerBase
     {
         protected readonly ILogger<LibraryBaseController> Logger;

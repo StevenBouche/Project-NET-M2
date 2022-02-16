@@ -1,0 +1,74 @@
+﻿@page "/library"
+@using Blazorise.DataGrid
+@using LibraryProject.Business.Dto.Books
+@using LibraryProject.WebUI.Services
+
+<h3>Library</h3>
+
+<DataGrid TItem="BookDto"
+          Data="@books"
+          @bind-SelectedRow="@selectedBook"
+          ReadData="@OnReadData"
+          TotalItems="@Total"
+          PageSize="@PageSize"
+          ShowPager
+          Editable
+          CommandMode="DataGridCommandMode.ButtonRow"
+          EditMode="DataGridEditMode.Popup"
+          Responsive>
+    <DataGridColumns>
+        <DataGridCommandColumn TItem="BookDto" />
+        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="#" Sortable="false" />
+        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Name)" Caption="Name" Editable="true" />
+        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Author)" Caption="Author" Editable="true" />
+    </DataGridColumns>
+    <ButtonRowTemplate>
+        <Button Color="Color.Success" Clicked="context.NewCommand.Clicked">New</Button>
+        <Button Color="Color.Primary" Disabled="(selectedBook is null)" Clicked="context.EditCommand.Clicked">Edit</Button>
+        <Button Color="Color.Danger" Disabled="(selectedBook is null)" Clicked="@OnClickDelete(context.DeleteCommand)">Delete</Button>
+        <Button Color="Color.Link" Clicked="context.ClearFilterCommand.Clicked">Clear Filter</Button>
+    </ButtonRowTemplate>
+</DataGrid>
+@code {
+
+    [Inject]
+    public BookService service { get; set; }
+    private List<BookDto> books { get; set; } = new();
+    private BookDto? selectedBook { get; set; } = null;
+
+    private int Total { get; set; } = 0;
+    private int PageSize { get; set; } = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        books = service.GetBooks();
+        await base.OnInitializedAsync();
+    }
+
+    private EventCallback OnClickDelete(DeleteCommandContext<BookDto> command)
+    {
+        return command.Clicked;
+    }
+
+    private async Task OnReadData(DataGridReadDataEventArgs<BookDto> e)
+    {
+        if (!e.CancellationToken.IsCancellationRequested)
+        {
+            List<BookDto> response = null;
+
+            // this can be call to anything, in this case we're calling a fictional api
+            //var response = await Http.GetJsonAsync<Employee[]>( $"some-api/employees?page={e.Page}&pageSize={e.PageSize}" );
+            if (e.ReadDataMode is DataGridReadDataMode.Paging)
+                //response = (await EmployeeData.GetDataAsync()).Skip( ( e.Page - 1 ) * e.PageSize ).Take( e.PageSize ).ToList();
+                response = service.GetBooks();
+            else
+                throw new Exception("Unhandled ReadDataMode");
+
+            if (!e.CancellationToken.IsCancellationRequested)
+            {
+                Total = response.Count;
+                books = new List<BookDto>(response);
+            }
+        }
+    }
+}
