@@ -19,18 +19,15 @@ connection.Closed += async (error) =>
 
 connection.On<BookDetailsDto>("OnCreatedBook", book =>
 {
-
     string output = JsonConvert.SerializeObject(book);
     Console.WriteLine($"Nouveau {output} cree");
 });
 
+connection.On<int>("OnDeletedBook", id =>
+{
+    Console.WriteLine(id);
+});
 
-
-
-
-
-
-
-
+await connection.StartAsync();
 
 Console.ReadLine();
