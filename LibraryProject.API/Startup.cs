@@ -1,7 +1,9 @@
-﻿using LibraryProject.API.Extensions;
+﻿using FluentValidation.AspNetCore;
+using LibraryProject.API.Extensions;
 using LibraryProject.API.Settings;
-using LibraryProject.Business.Common;
+using LibraryProject.Business.BookBusiness;
 using LibraryProject.Business.GenreBusiness;
+using LibraryProject.Business.Validators.GenreValidators;
 
 namespace LibraryProject.API
 {
@@ -49,6 +51,13 @@ namespace LibraryProject.API
             // Services for controller
             services.AddTransient<IBookService, BookService>();
             services.AddTransient<IGenreService, GenreService>();
+
+            //Validators
+            services.AddFluentValidation(x =>
+            {
+                x.DisableDataAnnotationsValidation = true;
+                x.RegisterValidatorsFromAssemblyContaining<GenreDtoValidator>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
