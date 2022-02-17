@@ -30,19 +30,22 @@ namespace WPF.Reader.ViewModel
         {
             Task.Run(async () =>
             {
-                PaginationResultDto result = await LibraryProject.API.Client.API.search(1, 10);
+                PaginationResultDto result = await LibraryProject.API.Client.API.search(1, 1000);
                 List<BookDto> resultBooks = result.Books;
                 baseBooksList = resultBooks;
 
-                Application.Current.Dispatcher.Invoke(() => {
-                    foreach (var book in resultBooks) {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    foreach (var book in resultBooks)
+                    {
                         Books.Add(book);
                     }
                 });
 
 
                 List<GenreDto> genres = await LibraryProject.API.Client.API.getAllGenres();
-                Application.Current.Dispatcher.Invoke(() => {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
                     genreList.Add("All");
                     foreach (var g in genres)
                     {
@@ -51,7 +54,8 @@ namespace WPF.Reader.ViewModel
                 });
             });
 
-            ItemSelectedCommand = new RelayCommand(value => {
+            ItemSelectedCommand = new RelayCommand(value =>
+            {
                 if ((string)value == "All")
                 {
                     Books.Clear();
