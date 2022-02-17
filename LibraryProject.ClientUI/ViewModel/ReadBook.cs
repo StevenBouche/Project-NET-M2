@@ -52,11 +52,35 @@ namespace WPF.Reader.ViewModel
             }
         }
 
-
-        static IEnumerable<string> ChunksUpto(string str, int maxChunkSize)
+        IEnumerable<string> SplitToLines(string stringToSplit, int maximumLineLength)
         {
-            for (int i = 0; i < str.Length; i += maxChunkSize)
-                yield return str.Substring(i, Math.Min(maxChunkSize, str.Length - i));
+            var words = stringToSplit.Split(' ');
+            var line = words.First();
+            var maxChar = 33;
+            var countBreakLine = 0;
+
+            foreach (var word in words.Skip(1))
+            {
+                int freq = word.Count(f => (f == '\n'));
+
+                var test = $"{line} {word}";
+                if (freq >= 2)
+                {
+                    countBreakLine++;
+                }
+
+                if (test.Length + (countBreakLine*maxChar) > maximumLineLength)
+                {
+                    yield return line;
+                    line = word;
+                }
+                else
+                {
+
+                    line = test;
+                }
+            }
+            yield return line;
         }
 
         public ReadBook(BookDetailsDto book)
@@ -70,7 +94,7 @@ namespace WPF.Reader.ViewModel
             }, x => PageCount >= 2);
 
             CurrentBook = book;
-            IEnumerable<string> s = ChunksUpto(CurrentBook.Content, 580);
+            IEnumerable<string> s = SplitToLines(CurrentBook.Content, 565);
             PagesContent = s.ToArray();
             PageCount = 0;
         }
