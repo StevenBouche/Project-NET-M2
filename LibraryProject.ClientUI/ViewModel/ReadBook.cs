@@ -36,9 +36,6 @@ namespace WPF.Reader.ViewModel
         public ICommand HandleNextPage { get; init; }
         public ICommand HandlePreviousPage { get; init; }
 
-
-
-
         public void NextPage()
         {
             if(PageCount + 1  < PagesContent.Length)
@@ -122,7 +119,7 @@ cette leçon vaut bien un fromage sans doute. »
 Le corbeau honteux et confus
 Jura, mais un peu tard, qu'on ne l'y prendrait plus.
 " };
-            IEnumerable<string> s = ChunksUpto(CurrentBook.Content, 595);
+            IEnumerable<string> s = ChunksUpto(CurrentBook.Content, 580);
             PagesContent = s.ToArray();
             PageCount = 0;
         }
