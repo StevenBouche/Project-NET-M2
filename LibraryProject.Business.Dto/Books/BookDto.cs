@@ -17,7 +17,7 @@ namespace LibraryProject.Business.Dto.Books
         [JsonProperty("price")]
         public double Price { get; set; }
 
-        [JsonProperty("books")]
+        [JsonProperty("genres")]
         public IList<GenreDto> Genres { get; set; } = new List<GenreDto>();
 
         [JsonProperty("createdAt")]

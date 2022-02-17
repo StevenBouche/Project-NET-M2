@@ -63,5 +63,17 @@ namespace LibraryProject.API.Controllers.Common
             });
         }
 
+        [HttpPut()]
+        [ProducesResponseType(typeof(BookDetailsDto), 200)]
+        public async Task<ActionResult> Update([FromBody] BookFormUpdateDto bookFormUpdateDto)
+        {
+            return await TryExecuteAsync<ActionResult>(async () =>
+            {
+                var resultDto = await _bookService.UpdateBook(bookFormUpdateDto);
+                return Ok(resultDto);
+            });
+        }
+
+
     }
 }

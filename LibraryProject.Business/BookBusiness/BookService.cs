@@ -25,7 +25,9 @@ namespace LibraryProject.Business.BookBusiness
 
         public async Task DeleteOneBook(int id)
         {
-            _context.Books.Remove(await GetBookByIdAsync(id));
+            var entity = await GetBookByIdAsync(id);
+            _context.BookGenres.RemoveRange(_context.BookGenres.Where(bg => bg.BookId == id));
+            _context.Books.Remove(entity);
             _context.SaveChanges();
         }
 
@@ -112,6 +114,48 @@ namespace LibraryProject.Business.BookBusiness
             transaction.Commit();
 
             return _mapper.Map<BookDetailsDto>(addedBookEntity);
+        }
+
+        public async Task<BookDetailsDto> UpdateBook(BookFormUpdateDto bookFormUpdateDto)
+        {
+            Book book = await GetBookByIdAsync(bookFormUpdateDto.IdBook);
+
+            using var transaction = _context.Database.BeginTransaction();
+
+            book.Name = bookFormUpdateDto.Name;
+            book.Author = bookFormUpdateDto.Author;
+            book.Content = bookFormUpdateDto.Content;
+            book.Price = bookFormUpdateDto.Price;
+           
+           var existingGenres = book.BookGenres.Select(bg => bg.GenreId).ToList();
+           var updatedListGenres = bookFormUpdateDto.GenresIds;
+
+            //recup les ids genres qui sont dans la liste de base (existingGenres) et qui ne sont pas dans updatedlist (car suppression) sinon il reste dans updated list
+            var genreToBeDeleted = existingGenres.Except(updatedListGenres).ToList();
+            //var bookGenreToBeDeleted = _context.BookGenres.Where(bg => bg.BookId == book.Id && genreToBeDeleted.Contains(bg.GenreId));
+           // _context.BookGenres.(bookGenreToBeDeleted);
+
+            book.BookGenres.RemoveAll(bg => genreToBeDeleted.Contains(bg.GenreId));
+            
+            //trouver les idsgenre qui sont dans updatedlistgenre et ne sont pas dans existinggenre
+            var newListGenres = updatedListGenres.Where(id => !existingGenres.Contains(id)).ToList();
+
+            var addNewBookGenre = newListGenres.Select(genreId => _context.BookGenres.CreateProxy(entity =>
+            {
+                entity.GenreId = genreId;
+                entity.BookId = book.Id;
+            })).ToList();
+
+            //_context.BookGenres.AddRange(addNewBookGenre);
+            book.BookGenres.AddRange(addNewBookGenre);
+
+            _context.Update(book);
+
+            await _context.SaveChangesAsync();
+
+            transaction.Commit();
+
+            return _mapper.Map<BookDetailsDto>(book);
         }
     }
 }
