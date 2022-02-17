@@ -1,10 +1,11 @@
-﻿<Window x:Class="WPF.Reader.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF.Reader"
-        xmlns:model="clr-namespace:WPF.Reader.ViewModel" d:DataContext="{d:DesignInstance Type=model:Navigator, IsDesignTimeCreatable=True}"
+        xmlns:model="clr-namespace:WPF.Reader.ViewModel" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="WPF.Reader.MainWindow"
+        d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True, Type={x:Type model:Navigator}}"
         mc:Ignorable="d"
         DataContext="{DynamicResource navigator}" Title="MainWindow" Height="700" Width="800" Background="{DynamicResource MaterialDesignLightBackground}" ResizeMode="NoResize">
     <Window.Resources>
@@ -12,9 +13,22 @@
     </Window.Resources>
     <DockPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Right" >
+            <Canvas Visibility="{Binding canvasVisibility}" Panel.ZIndex="1">
+                <materialDesign:Card Height="50">
+                    <Label Content="{Binding createdBookName}" Width="161">
+                        <Label.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#FFD1E6BB" Offset="0"/>
+                                <GradientStop Color="#FF6AE20B" Offset="1"/>
+                                <GradientStop Color="#FF63AF49" Offset="0.527"/>
+                            </LinearGradientBrush>
+                        </Label.Background>
+                    </Label>
+                </materialDesign:Card>
+            </Canvas>
             <Button Command="{Binding GoToHome}" Width="162" Content="Accueil" Click="Button_Click" Cursor="Hand"/>
         </StackPanel>
         <Label DockPanel.Dock="Top" Content="Library system" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="30px"/>
-        <ContentPresenter  Content="{Binding Path=Frame}" x:Name="Navigation"/>
+        <ContentPresenter  Content="{Binding Frame}" x:Name="Navigation"/>
     </DockPanel>
 </Window>
