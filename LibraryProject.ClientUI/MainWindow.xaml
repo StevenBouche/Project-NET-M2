@@ -15,6 +15,6 @@
             <Button Command="{Binding GoToHome}" Width="162" Content="Accueil" Click="Button_Click" Cursor="Hand"/>
         </StackPanel>
         <Label DockPanel.Dock="Top" Content="Library system" VerticalAlignment="Top" HorizontalAlignment="Center" FontSize="30px"/>
-        <ContentPresenter  Content="{Binding Path=Frame}" x:Name="Navigation"/>
+        <ContentPresenter  Content="{Binding Path=Frame}" x:Name="Navigation" DockPanel.Dock="Top" HorizontalAlignment="Stretch"/>
     </DockPanel>
 </Window>
