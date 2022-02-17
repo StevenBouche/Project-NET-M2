@@ -44,7 +44,9 @@ namespace LibraryProject.Business.GenreBusiness
 
         public void DeleteGenreById(int id)
         {
-            _context.Remove(GetGenreEntityById(id));
+            var entity = GetGenreEntityById(id);
+            _context.BookGenres.RemoveRange(_context.BookGenres.Where(bg => bg.GenreId == id));
+            _context.Genres.Remove(entity);
             _context.SaveChanges();
         }
 

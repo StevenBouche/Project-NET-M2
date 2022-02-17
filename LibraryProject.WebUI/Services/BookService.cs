@@ -14,6 +14,15 @@ namespace LibraryProject.WebUI.Services
             Client = client;
         }
 
+        public Task<BookDetailsDto?> GetBookDetailsById(int id)
+        {
+            return TryExecuteAsync(() =>
+            {
+                var request = new RestRequest($"{BaseURL}/book/{id}");
+                return Client.GetAsync<BookDetailsDto>(request);
+            });
+        }
+
         public Task<PaginationResultDto?> GetPaginateBooksAsync(PaginationDto pagination)
         {
             return TryExecuteAsync(() =>

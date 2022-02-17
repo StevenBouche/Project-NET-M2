@@ -16,5 +16,7 @@ namespace LibraryProject.Business.BookBusiness
         public Task<BookDetailsDto> PostNewBookAsync(BookFormCreateDto bookFormCreateDto);
 
         public Task DeleteOneBook(int id);
+
+        public Task<BookDetailsDto> UpdateBook(BookFormUpdateDto bookFormUpdateDto);
     }
 }

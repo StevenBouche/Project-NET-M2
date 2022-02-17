@@ -5,123 +5,127 @@
 @using LibraryProject.WebUI.Services
 @using Blazorise.RichTextEdit
 
-<h3>Library</h3>
+<h3>Library Dashboard</h3>
 
 <div class="row">
-    <Fields>
-        <!-- Name Filter -->
-        <div class="col-md-3">
-            <Field>
-                <FieldLabel>Book title :</FieldLabel>
-                <FieldBody>
-                    <TextEdit Text="@Pagination.Title" TextChanged="@OnTitleChanged" Placeholder="Title filter"></TextEdit>
-                </FieldBody>
-            </Field>
-        </div>
-        <!-- Author name filter Filter -->
-        <div class="col-md-3">
-            <Field>
-                <FieldLabel>Author name :</FieldLabel>
-                <FieldBody>
-                    <TextEdit Text="@Pagination.AuthorName" TextChanged="@OnAuthorNameChanged" Placeholder="Author name filter"></TextEdit>
-                </FieldBody>
-            </Field>
-        </div>
-        <!-- Genre multiple selector -->
-        <div class="col-md-3">
-            <Field>
-                <FieldLabel>Genre :</FieldLabel>
-                <FieldBody>
-                     <Select TValue="int?" SelectedValue="@Pagination.IdGenre" SelectedValueChanged="@OnIdGenreChanged">
-                        <SelectItem Value="0">All</SelectItem>
-                        @foreach (var item in Genres)
-                        {
-                            <SelectItem Value="@item.Id">@item.Name</SelectItem>
-                        }
-                    </Select>
-                </FieldBody>
-            </Field>
-        </div>
-        <div class="col-md-3">
-            <Field>
-                <FieldLabel>Page size :</FieldLabel>
-                <FieldBody>
-                     <Select TValue="int" SelectedValue="@Pagination.PageSize" SelectedValueChanged="@OnPageSizeChanged">
-                        @foreach (var item in PageSizeValues)
-                        {
-                            <SelectItem Value="@item">@item</SelectItem>
-                        }
-                    </Select>
-                </FieldBody>
-            </Field>
-        </div>
-    </Fields>
-</div>
+    <!-- List -->
+    <div class="row">
+        <Fields>
+            <!-- Name Filter -->
+            <div class="col-md-3">
+                <Field>
+                    <FieldLabel>Book title :</FieldLabel>
+                    <FieldBody>
+                        <TextEdit Text="@Pagination.Title" TextChanged="@OnTitleChanged" Placeholder="Title filter"></TextEdit>
+                    </FieldBody>
+                </Field>
+            </div>
+            <!-- Author name filter Filter -->
+            <div class="col-md-3">
+                <Field>
+                    <FieldLabel>Author name :</FieldLabel>
+                    <FieldBody>
+                        <TextEdit Text="@Pagination.AuthorName" TextChanged="@OnAuthorNameChanged" Placeholder="Author name filter"></TextEdit>
+                    </FieldBody>
+                </Field>
+            </div>
+            <!-- Genre multiple selector -->
+            <div class="col-md-3">
+                <Field>
+                    <FieldLabel>Genre :</FieldLabel>
+                    <FieldBody>
+                        <Select TValue="int?" SelectedValue="@Pagination.IdGenre" SelectedValueChanged="@OnIdGenreChanged">
+                            <SelectItem Value="0">All</SelectItem>
+                            @foreach (var item in Genres)
+                            {
+                                <SelectItem Value="@item.Id">@item.Name</SelectItem>
+                            }
+                        </Select>
+                    </FieldBody>
+                </Field>
+            </div>
+            <div class="col-md-3">
+                <Field>
+                    <FieldLabel>Page size :</FieldLabel>
+                    <FieldBody>
+                        <Select TValue="int" SelectedValue="@Pagination.PageSize" SelectedValueChanged="@OnPageSizeChanged">
+                            @foreach (var item in PageSizeValues)
+                            {
+                                <SelectItem Value="@item">@item</SelectItem>
+                            }
+                        </Select>
+                    </FieldBody>
+                </Field>
+            </div>
+        </Fields>
+        <div class="@TableColClass">
+            <!-- Table -->
+            <DataGrid TItem="BookDto"
+                      Data="@PaginationResult.Books"
+                      SelectedRow="@SelectedBook"
+                      SelectedRowChanged="OnSelectedRowChanged"
+                      ReadData="@OnReadData"
+                      TotalItems="@PaginationResult.Total"
+                      PageSize="@Pagination.PageSize"
+                      ShowPager
+                      Editable
+                      CommandMode="DataGridCommandMode.ButtonRow"
+                      EditMode="DataGridEditMode.Form"
+                      Hoverable
+                      PagerPosition="DataGridPagerPosition.Top"
+                      FixedHeader="true"
+                      FixedHeaderDataGridMaxHeight="400px"
+                      Responsive>
+                <DataGridColumns>
+                    <DataGridCommandColumn TItem="BookDto" />
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="#" Sortable="false" />
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Name)" Caption="Title" Editable="true" Sortable="false">
+                        <EditTemplate>
+                            <TextEdit Placeholder="Enter name" />
+                        </EditTemplate>
+                    </DataGridColumn>
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Author)" Caption="Author" Editable="true" Sortable="false"></DataGridColumn>
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="Genres" Editable="true" Sortable="false">
+                        <DisplayTemplate>
+                            @{
+                                var item = (context as BookDto);
 
-<!-- Table -->
-<DataGrid TItem="BookDto"
-          Data="@PaginationResult.Books"
-          @bind-SelectedRow="@selectedBook"
-          ReadData="@OnReadData"
-          TotalItems="@PaginationResult.Total"
-          PageSize="@Pagination.PageSize"
-          ShowPageSizes
-          ShowPager
-          Editable
-          CommandMode="DataGridCommandMode.ButtonRow"
-          EditMode="DataGridEditMode.Popup"
-          Hoverable
-          Responsive>
-    <DataGridColumns>
-        <DataGridCommandColumn TItem="BookDto" />
-        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="#" Sortable="false" />
-        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Name)" Caption="Title" Editable="true" Sortable="false">
-            <EditTemplate>
-                <TextEdit Placeholder="Enter name" />
-            </EditTemplate>
-        </DataGridColumn>
-        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Author)" Caption="Author" Editable="true" Sortable="false"></DataGridColumn>
-        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="Genres" Editable="true" Sortable="false">
-            <DisplayTemplate>
-                @{
-                    var item = (context as BookDto);
-
-                    foreach(var genre in item.Genres)
-                    {
-                        <Badge Color="Color.Primary">@genre.Name</Badge>
-                    }
-                }
-            </DisplayTemplate>
-            <EditTemplate>
-                <Blazorise.Components.Autocomplete 
-                    TItem="GenreDto"
-                    TValue="int"
-                    Data="@Genres"
-                    TextField="@(item => item.Name)"
-                    ValueField="@(item => item.Id)"
-                    Placeholder="Search..."
-                    Multiple
-                    FreeTyping="false"
-                    @bind-SelectedValues="multipleSelectioValues"
-                    @bind-SelectedTexts="multipleSelectionTexts " />
-            </EditTemplate>
-        </DataGridColumn>
-    </DataGridColumns>
-    <ButtonRowTemplate>
-        <Button Color="Color.Success" Clicked="context.NewCommand.Clicked">New</Button>
-        <Button Color="Color.Primary" Disabled="(selectedBook is null)" Clicked="context.EditCommand.Clicked">Edit</Button>
-        <Button Color="Color.Danger" Disabled="(selectedBook is null)" Clicked="@OnClickDelete(context.DeleteCommand)">Delete</Button>
-    </ButtonRowTemplate>
-    <EmptyTemplate>
-        <div class="box">
-            No books were found!
+                                foreach (var genre in item.Genres)
+                                {
+                                    <Badge Color="Color.Primary">@genre.Name</Badge>
+                                }
+                            }
+                        </DisplayTemplate>
+                        <EditTemplate>
+                            <Blazorise.Components.Autocomplete
+                                TItem="GenreDto"
+                                TValue="int"
+                                Data="@Genres"
+                                TextField="@(item => item.Name)"
+                                ValueField="@(item => item.Id)"
+                                Placeholder="Search..."
+                                Multiple
+                                FreeTyping="false"
+                                @bind-SelectedValues="multipleSelectioValues"
+                                @bind-SelectedTexts="multipleSelectionTexts " />
+                        </EditTemplate>
+                    </DataGridColumn>
+                </DataGridColumns>
+                <ButtonRowTemplate>
+                    <Button Color="Color.Success" Clicked="@OnClickNew(context.NewCommand)">New</Button>
+                    <Button Color="Color.Primary" Disabled="(SelectedBook is null)" Clicked="@OnClickEdit(context.EditCommand)">Edit</Button>
+                    <Button Color="Color.Danger" Disabled="(SelectedBook is null)" Clicked="@OnClickDelete(context.DeleteCommand)">Delete</Button>
+                </ButtonRowTemplate>
+                <EmptyTemplate>
+                    <div class="box">
+                        No books were found!
+                    </div>
+                </EmptyTemplate>
+            </DataGrid>
         </div>
-    </EmptyTemplate>
-</DataGrid>
-
-@if (selectedBook != null)
-{
-    <RichTextEdit @ref="richTextEditRef"
+        @if(SelectedDetailsBook != null){
+    <div class="col-md-4">
+        <RichTextEdit @ref="richTextEditRef"
               Theme="RichTextEditTheme.Snow"
               ContentChanged="@OnContentChanged"
               PlaceHolder="Type your post here..."
@@ -129,28 +133,32 @@
               SubmitOnEnter="false"
               EnterPressed="@OnSave"
               ToolbarPosition="Placement.Bottom">
-        <Editor>My example content</Editor>
-        <Toolbar>
-            <RichTextEditToolbarGroup>
-                <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
-                <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
-                <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
-                    <RichTextEditToolbarSelectItem Value="small" />
-                    <RichTextEditToolbarSelectItem Selected="true" />
-                    <RichTextEditToolbarSelectItem Value="large" />
-                    <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
-                </RichTextEditToolbarSelect>
-                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
-                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
-            </RichTextEditToolbarGroup>
-            <!-- Custom toolbar content -->
-        <RichTextEditToolbarGroup Float="Float.End">
-                <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Icon Name="IconName.InfoCircle" /></Button>
-                <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
-            </RichTextEditToolbarGroup>
-        </Toolbar>
-    </RichTextEdit>
-}
+            <Editor>My example content</Editor>
+            <Toolbar>
+                <RichTextEditToolbarGroup>
+                    <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
+                    <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
+                    <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
+                        <RichTextEditToolbarSelectItem Value="small" />
+                        <RichTextEditToolbarSelectItem Selected="true" />
+                        <RichTextEditToolbarSelectItem Value="large" />
+                        <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
+                    </RichTextEditToolbarSelect>
+                    <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
+                    <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
+                </RichTextEditToolbarGroup>
+                <!-- Custom toolbar content -->
+            <RichTextEditToolbarGroup Float="Float.End">
+                    <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Icon Name="IconName.InfoCircle" /></Button>
+                    <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
+                </RichTextEditToolbarGroup>
+            </Toolbar>
+        </RichTextEdit>
+    </div>
+    }
+    </div>
+    
+</div>
 
 @code {
 
@@ -166,21 +174,27 @@
     #region data
 
     public List<GenreDto> Genres { get; set; } = new();
-    private BookDto? selectedBook { get; set; } = null;
+    private BookDto? SelectedBook { get; set; } = null;
+    private BookDetailsDto? SelectedDetailsBook { get; set; } = null;
 
     #endregion data
 
+    #region layout
+
+    public string TableColClass { get => SelectedDetailsBook is null ? "col-md-12" : "col-md-8"; }
+
+    #endregion layout
+
     #region pagination
 
-    private List<int> PageSizeValues = new(){ 2, 5, 10, 20, 50 };
+    private List<int> PageSizeValues = new() { 2, 5, 10, 20, 50 };
 
     private PaginationDto Pagination = new()
         {
             Page = 1,
             PageSize = 10,
             IdGenre = 0,
-            AuthorName = string.Empty,            
-            Title = string.Empty
+            AuthorName = string.Empty,            Title = string.Empty
         };
 
     private PaginationResultDto PaginationResult = new()
@@ -217,6 +231,12 @@
         await base.OnInitializedAsync();
     }
 
+    async Task OnSelectedRowChanged(BookDto item)
+    {
+        SelectedBook = SelectedBook != null && SelectedBook.Id == item.Id ? null : item;
+        SelectedDetailsBook = SelectedBook == null ? null : await serviceBook.GetBookDetailsById(SelectedBook.Id);
+    }
+
     #region paginationMethod
 
     Task OnPageSizeChanged(int value)
@@ -246,13 +266,23 @@
     private async Task GetBookPaginate()
     {
         var result = await serviceBook.GetPaginateBooksAsync(Pagination);
-        if(result != null)
+        if (result != null)
         {
             PaginationResult = result;
         }
     }
 
     #endregion paginationMethod
+
+    private EventCallback OnClickNew(NewCommandContext command)
+    {
+        return command.Clicked;
+    }
+
+    private EventCallback OnClickEdit(EditCommandContext<BookDto> command)
+    {
+        return command.Clicked;
+    }
 
     private EventCallback OnClickDelete(DeleteCommandContext<BookDto> command)
     {
@@ -265,7 +295,7 @@
         {
             if (e.ReadDataMode is DataGridReadDataMode.Paging)
             {
-                if(Pagination.Page != e.Page)
+                if (Pagination.Page != e.Page)
                 {
                     Pagination.Page = e.Page;
                     await GetBookPaginate();
@@ -283,6 +313,8 @@
     }
 
     #region methodEdit
+
+
 
     public async Task OnContentChanged()
     {

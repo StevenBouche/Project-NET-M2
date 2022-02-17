@@ -8,6 +8,6 @@ namespace LibraryProject.Domain.Entities
         public string Author { get; set; } = string.Empty;
         public double Price { get; set; }
         public string Content { get; set; } = string.Empty;
-        public virtual IList<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
+        public virtual List<BookGenre> BookGenres { get; set; } = new List<BookGenre>();
     }
 }
