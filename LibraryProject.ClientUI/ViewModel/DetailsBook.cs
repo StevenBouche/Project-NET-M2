@@ -14,6 +14,7 @@ namespace WPF.Reader.ViewModel
 
         // n'oublier pas faire de faire le binding dans DetailsBook.xaml !!!!
         public BookDetailsDto CurrentBook { get; set; }
+        public string genres { get; set; }
         public int bookId { get; set; }
 
         public DetailsBook(int bookId)
@@ -23,8 +24,15 @@ namespace WPF.Reader.ViewModel
             Task.Run(async () =>
             {
                 CurrentBook = await LibraryProject.API.Client.API.findById(this.bookId);
-                Trace.WriteLine("book: " + this.bookId + ": " + CurrentBook.Name);
-                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentBook)));
+            for (int i = 0; i < CurrentBook.Genres.Count; i++)
+                {
+                    genres += CurrentBook.Genres[i].Name;
+                    if (i != CurrentBook.Genres.Count)
+                    {
+                        genres += "/";
+                    }
+                }
+                
             });
         }
     }

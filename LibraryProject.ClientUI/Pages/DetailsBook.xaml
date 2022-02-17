@@ -17,14 +17,25 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Background="#FFFFDE00">Name</Label>
+            <Label Grid.Column="1" Grid.Row="0" Background="#FFFFDE00">Author</Label>
+            <Label Grid.Column="2" Grid.Row="0" Background="#FFFFDD00">Price</Label>
+            <Label Grid.Column="3" Grid.Row="0" Background="#FFFFDD00">Genre</Label>
+            <Label Grid.Column="4" Grid.Row="0" Background="#FFFFDD00">Created at</Label>
+
             <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=CurrentBook.Name}" />
             <Label Grid.Column="1" Grid.Row="1" Content="{Binding Path=CurrentBook.Author}" />
             <Label Grid.Column="2" Grid.Row="1" Content="{Binding Path=CurrentBook.Price}" />
+            <Label Grid.Column="3" Grid.Row="1" Content="{Binding Path=CurrentBook.Genres[0].Name}" />
+            <Label Grid.Column="4" Grid.Row="1" Content="{Binding Path=CurrentBook.CreatedAt}" />
         </Grid>
     </StackPanel>
 </Page>
