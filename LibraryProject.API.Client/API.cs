@@ -17,6 +17,7 @@ namespace LibraryProject.API.Client
                 HttpResponseMessage response = await client.GetAsync($"{API_URL}/book/{id}");
                 response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
+                Trace.WriteLine("book: " + responseBody);
                 return JsonConvert.DeserializeObject<BookDetailsDto>(responseBody);
             }
             catch (HttpRequestException e)

@@ -45,5 +45,19 @@ namespace WPF.Reader.ViewModel
             }
             service.Navigate<DetailsBook>(((BookDto)x).Id);
         });
+
+        public ICommand GoToRead { get; init; } = new RelayCommand(x => {
+            var service = Ioc.Default.GetRequiredService<INavigationService>();
+            if (service.Frame.CanGoBack)
+            {
+                service.Frame.RemoveBackEntry();
+                var entry = service.Frame.RemoveBackEntry();
+                while (entry != null)
+                {
+                    entry = service.Frame.RemoveBackEntry();
+                }
+            }
+            service.Navigate<ReadBook>((BookDetailsDto)x);
+        });
     }
 }

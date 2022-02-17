@@ -10,7 +10,7 @@ namespace WPF.Reader.ViewModel
     public class DetailsBook : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public ICommand ReadCommand { get; init; } = new RelayCommand(x => { /* A vous de définir la commande */ });
+        public ICommand ReadCommand { get; init; }
 
         // n'oublier pas faire de faire le binding dans DetailsBook.xaml !!!!
         public BookDetailsDto CurrentBook { get; set; }
@@ -34,6 +34,8 @@ namespace WPF.Reader.ViewModel
                 }
                 
             });
+            Navigator n = new Navigator();
+            ReadCommand = n.GoToRead;
         }
     }
 
