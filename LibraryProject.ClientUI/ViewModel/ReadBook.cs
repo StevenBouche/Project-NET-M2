@@ -33,19 +33,25 @@ namespace WPF.Reader.ViewModel
                 return ""; 
             }
         }
+        public ICommand HandleNextPage { get; init; }
+        public ICommand HandlePreviousPage { get; init; }
+
+
+
+
         public void NextPage()
         {
             if(PageCount + 1  < PagesContent.Length)
             {
-                PageCount++;
+                PageCount+=2;
             }
         }
 
         public void PreviousPage()
         {
-            if(PageCount > 0)
+            if(PageCount >= 2)
             {
-               PageCount--;
+               PageCount-=2;
             }
         }
 
@@ -58,6 +64,14 @@ namespace WPF.Reader.ViewModel
 
         public ReadBook()
         {
+            HandleNextPage = new RelayCommand(x => {
+                NextPage();
+            }, x => PageCount + 2 < PagesContent.Length);
+
+            HandlePreviousPage = new RelayCommand(x => {
+                PreviousPage();
+            }, x => PageCount >= 2);
+
             CurrentBook = new BookDetailsDto() { Name="Les comptes de la fontaine", Content= @"LA CIGALE ET LA FOURMI
 La Cigale,
                 ayant chanté
@@ -83,7 +97,31 @@ Dit - elle à cette emprunteuse.
 Je chantais,
                 ne vous déplaise.
 - Vous chantiez ? j'en suis fort aise :
-Eh bien! dansez maintenant. »"};
+Eh bien! dansez maintenant. »
+
+
+
+FABLE II
+LE CORBEAU ET LE RENARD
+Maître Corbeau, sur un arbre perché,
+Tenait en son bec un fromage.
+Maître Renard, par l'odeur alléché,
+Lui tint à peu près ce langage :
+« Et bonjour, Monsieur du Corbeau.
+Que vous êtes joli ! que vous me semblez beau !
+Sans mentir, si votre ramage
+Se rapporte à votre plumage,
+Vous êtes le Phénix des hôtes de ces Bois. »
+A ces mots le corbeau ne se sent pas de joie :
+Et pour montrer sa belle voix,
+Il ouvre un large bec, laisse tomber sa proie.
+Le Renard s'en saisit, et dit : « Mon bon Monsieur,
+Apprenez que tout flatteur
+Vit aux dépens de celui qui j'écoute.
+cette leçon vaut bien un fromage sans doute. »
+Le corbeau honteux et confus
+Jura, mais un peu tard, qu'on ne l'y prendrait plus.
+" };
             IEnumerable<string> s = ChunksUpto(CurrentBook.Content, 595);
             PagesContent = s.ToArray();
             PageCount = 0;
