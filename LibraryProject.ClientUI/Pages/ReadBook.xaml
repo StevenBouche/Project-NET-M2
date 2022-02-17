@@ -6,10 +6,9 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPF.Reader.Pages"
       xmlns:vm="clr-namespace:WPF.Reader.ViewModel"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      mc:Ignorable="d"
       d:DataContext="{d:DesignInstance Type=vm:ReadBook, d:IsDesignTimeCreatable=True}"
-      Title="ReadBook">
+      Title="ReadBook" Height="700" Width="800">
     <Page.Resources>
         <vm:Navigator x:Key="navigator" />
         <Style TargetType="{x:Type Border}" x:Key="pageBorder">
@@ -20,16 +19,16 @@
             <Setter Property="BorderThickness" Value="1" />
         </Style>
     </Page.Resources>
-    <Grid>
+    <Grid Width="800" Height="700" VerticalAlignment="Top">
         <Grid.RowDefinitions>
             <RowDefinition Height="80" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="80" />
+            <RowDefinition />
+            <RowDefinition Height="85" />
         </Grid.RowDefinitions>
         <!-- On aimerais bien avoir le tire du livre en entête -->
 
         <Grid>
-            <materialDesign:Card Padding="16" Margin="16">
+            <materialDesign:Card Padding="16" Margin="113,16,113,0" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock TextAlignment="Center"   TextWrapping="Wrap" FontWeight="UltraBold" Foreground="Navy"  
                            Style="{DynamicResource MaterialDesignTitleTextBlock}"  Text="{Binding CurrentBook.Name}" Background="White"/>
             </materialDesign:Card>
@@ -39,34 +38,22 @@
 
         <!-- Ainsi que le contenu du livre ! -->
 
-        <Grid Margin="92,16,400,18" Grid.Row="1" Grid.RowSpan="2">
+        <Grid Margin="92,16,400,88" Grid.Row="1">
             <materialDesign:Card Padding="32" Margin="16">
                 <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="{Binding PageContentLeft}" Background="White" TextWrapping="Wrap"/>
             </materialDesign:Card>
         </Grid>
 
-        <Grid Margin="400,16,92,18" Grid.Row="1" Grid.RowSpan="2">
+        <Grid Margin="400,16,92,88" Grid.Row="1">
             <materialDesign:Card Padding="32" Margin="16">
-                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="{Binding PageContentRight}" Background="White"/>
+                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="{Binding PageContentRight}" Background="White" TextWrapping="Wrap" Height="335.16"/>
             </materialDesign:Card>
         </Grid>
 
-        <Button Grid.Row="2" Command="{Binding Path=GoBack, Source={StaticResource ResourceKey=navigator}}" CommandParameter="LIST" Height="30" VerticalAlignment="Top" HorizontalAlignment="Center" Width="200" Content="Retourner au details" Margin="0,50,0,0"/>
+        <Button Grid.Row="1" Command="{Binding Path=GoBack, Source={StaticResource ResourceKey=navigator}}" CommandParameter="LIST" Height="30" VerticalAlignment="Top" HorizontalAlignment="Center" Width="200" Content="Retourner au details" Margin="0,452,0,0" Cursor="Hand"/>
 
-        <Button Content="Page suivante" x:Name="btnNext" RenderTransformOrigin="0.594,0.618" Margin="680,48,0,0" Grid.Row="2">
-            <Button.Triggers>
-                <EventTrigger RoutedEvent="ButtonBase.Click">
-
-                </EventTrigger>
-            </Button.Triggers>
-        </Button>
-        <Button Content="Page precedente" x:Name="btnPrevious" RenderTransformOrigin="0.594,0.618" Margin="0,48,661,0" Grid.Row="2">
-            <Button.Triggers>
-                <EventTrigger RoutedEvent="ButtonBase.Click">
-
-                </EventTrigger>
-            </Button.Triggers>
-        </Button>
+        <Button Command="{Binding HandleNextPage}" x:Name="btnNext" RenderTransformOrigin="0.594,0.618" Margin="717,158,30,0" Grid.Row="1" Content="&gt;" BorderBrush="#FF2D55B9" FontWeight="Bold" FontSize="24" VerticalAlignment="Top" Height="52" Background="#FF2851B9" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+        <Button Command="{Binding HandlePreviousPage}" x:Name="btnNext_Copy" RenderTransformOrigin="0.594,0.618" Margin="20,158,0,0" Grid.Row="1" Content="&lt;" Background="#FF2851B9" BorderBrush="#FF2D55B9" FontWeight="Bold" FontSize="24" VerticalAlignment="Top" HorizontalAlignment="Left" Height="52" Width="53" Cursor="Hand"/>
     </Grid>
 </Page>
 

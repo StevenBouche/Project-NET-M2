@@ -19,8 +19,8 @@ namespace LibraryProject.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
-        [ProducesResponseType(typeof(GenreDto), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(GenreDto), StatusCodes.Status200OK)]
         public ActionResult<List<GenreDto>> GetAllGenres()
         {
             return TryExecute<ActionResult>(() =>
@@ -30,8 +30,8 @@ namespace LibraryProject.API.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(GenreDto), StatusCodes.Status200OK)]
         public ActionResult<GenreDto> GetGenreById(int id)
         {
             return TryExecute<ActionResult>(() =>
@@ -41,8 +41,8 @@ namespace LibraryProject.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
-        [ProducesResponseType(typeof(GenreDto), 201)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(GenreDto), StatusCodes.Status201Created)]
         public async Task<ActionResult<GenreDto>> CreateGenre([FromBody] GenreFormCreateDto genreFormCreateDto)
         {
             return await TryExecuteAsync<ActionResult>(async () =>
@@ -53,7 +53,7 @@ namespace LibraryProject.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult DeleteGenreById(int id)
         {
@@ -65,8 +65,8 @@ namespace LibraryProject.API.Controllers
         }
 
         [HttpGet("/{id}/books")]
-        [ProducesResponseType(typeof(ApiErrorResponse), 400)]
-        [ProducesResponseType(typeof(BookDto), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BookDto), StatusCodes.Status200OK)]
         public ActionResult GetAllBooksByGenreId(int id)
         {
             return TryExecute(() =>

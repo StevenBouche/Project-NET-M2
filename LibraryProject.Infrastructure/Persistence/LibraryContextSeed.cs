@@ -20,6 +20,7 @@ namespace LibraryProject.Infrastructure.Persistence
                     Name = "Livre_1",
                     Author = "Tata",
                     Price = 10,
+                    Content = SeedConst.POEME_RICARD,
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
                 },
@@ -28,6 +29,7 @@ namespace LibraryProject.Infrastructure.Persistence
                     Name = "Livre_2",
                     Author = "Toto",
                     Price = 20,
+                    Content = SeedConst.POEME_FLEUR,
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
                 },
@@ -36,6 +38,7 @@ namespace LibraryProject.Infrastructure.Persistence
                     Name = "Livre_3",
                     Author = "Titi",
                     Price = 30,
+                    Content = SeedConst.POEME_VIE,
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
                 },
@@ -44,6 +47,7 @@ namespace LibraryProject.Infrastructure.Persistence
                     Name = "Livre_4",
                     Author = "Tutu",
                     Price = 40,
+                    Content = SeedConst.POEME_SOLEIL,
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
                 },
@@ -52,6 +56,7 @@ namespace LibraryProject.Infrastructure.Persistence
                     Name = "Livre_5",
                     Author = "Tete",
                     Price = 50,
+                    Content = SeedConst.POEME_BANDOL,
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
                 },

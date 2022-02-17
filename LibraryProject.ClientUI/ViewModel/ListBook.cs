@@ -73,13 +73,8 @@ namespace WPF.Reader.ViewModel
                 }
             });
 
-            BookSelectedCommand = new RelayCommand(book =>
-            {
-                if (book != null)
-                {
-                    Trace.WriteLine("selected book: " + ((BookDto)book).Name);
-                }
-            });
+            Navigator n = new Navigator();
+            BookSelectedCommand = n.GoToDetails;
         }
     }
 }

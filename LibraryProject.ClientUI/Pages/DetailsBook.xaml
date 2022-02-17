@@ -5,18 +5,38 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPF.Reader.Pages"
       xmlns:vm="clr-namespace:WPF.Reader.ViewModel"
+      xmlns:model="clr-namespace:LibraryProject.Business.Dto.Books;assembly=LibraryProject.Business.Dto"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       d:DataContext="{d:DesignInstance Type=vm:InDesignDetailsBook, d:IsDesignTimeCreatable=True}"
       Title="DetailsBook">
 
-    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <!-- il faut afficher les information du livre: Nom, Auteur, Prix, Genres-->
-        <!-- Mais pas le contenu ! -->
-        <!-- N'oublier pas le bouton pour aller lire le livre. La commande ReadCommand est faite pour ca ! -->
-    </Grid>
+    <StackPanel Orientation="Vertical">
+        <Grid x:Name="dataGrid1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Label Grid.Column="0" Grid.Row="0" Background="#FFFFDE00">Name</Label>
+            <Label Grid.Column="1" Grid.Row="0" Background="#FFFFDE00">Author</Label>
+            <Label Grid.Column="2" Grid.Row="0" Background="#FFFFDD00">Price</Label>
+            <Label Grid.Column="3" Grid.Row="0" Background="#FFFFDD00">Genre</Label>
+            <Label Grid.Column="4" Grid.Row="0" Background="#FFFFDD00">Created at</Label>
+
+            <Label Grid.Column="0" Grid.Row="1" Content="{Binding Path=CurrentBook.Name}" />
+            <Label Grid.Column="1" Grid.Row="1" Content="{Binding Path=CurrentBook.Author}" />
+            <Label Grid.Column="2" Grid.Row="1" Content="{Binding Path=CurrentBook.Price}" />
+            <Label Grid.Column="3" Grid.Row="1" Content="{Binding Path=CurrentBook.Genres[0].Name}" />
+            <Label Grid.Column="4" Grid.Row="1" Content="{Binding Path=CurrentBook.CreatedAt}" />
+        </Grid>
+        <Button  Command="{Binding ReadCommand}" CommandParameter="{Binding CurrentBook}" Content="Read content" Cursor="Hand" Margin="0,50,0,0"/>
+    </StackPanel>
 </Page>
