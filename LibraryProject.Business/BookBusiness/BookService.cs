@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using LibraryProject.Business.Dto.Books;
+using LibraryProject.Business.Dto.Genres;
 using LibraryProject.Business.Exceptions;
+using LibraryProject.Business.GenreBusiness;
 using LibraryProject.Domain.Entities;
 using LibraryProject.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -79,19 +81,25 @@ namespace LibraryProject.Business.BookBusiness
             return entity;
         }
 
+        private void AllIdsGenresExist(List<int> ids)
+        {
+            var IdsGenre = _context.Genres.Select(genre => genre.Id);
+            var isOk = ids.All(id => IdsGenre.Contains(id));
+
+            if (!isOk)
+            {
+                var IdsNotFound = ids.Where(id => !IdsGenre.Contains(id)).ToList();
+                var IdsString = string.Join(",", IdsNotFound);
+                throw new BookException(BookBusinessExceptionTypes.GENRE_NOT_FOUND, $"sur les IDs : {IdsString}");
+            }
+        }
+
         public async Task<BookDetailsDto> PostNewBookAsync(BookFormCreateDto bookFormCreateDto)
         {
             var BooksDbSet = _context.Books;
             var BookGenreDbSet = _context.BookGenres;
-            var IdsGenre = _context.Genres.Select(genre => genre.Id);
-            var isOk = bookFormCreateDto.GenresIds.All(id => IdsGenre.Contains(id));
 
-            if(!isOk)
-            {
-                var IdsNotFound = bookFormCreateDto.GenresIds.Where(id => !IdsGenre.Contains(id)).ToList();
-                var IdsString = string.Join(",", IdsNotFound);
-                throw new BookException(BookBusinessExceptionTypes.GENRE_NOT_FOUND, $"sur les IDs : {IdsString}");
-            }
+            AllIdsGenresExist(bookFormCreateDto.GenresIds);
 
             using var transaction = _context.Database.BeginTransaction();
             
@@ -115,6 +123,8 @@ namespace LibraryProject.Business.BookBusiness
         {
             Book book = await GetBookByIdAsync(bookFormUpdateDto.IdBook);
 
+            AllIdsGenresExist(bookFormUpdateDto.GenresIds);
+
             using var transaction = _context.Database.BeginTransaction();
 
             book.Name = bookFormUpdateDto.Name;
@@ -125,14 +135,10 @@ namespace LibraryProject.Business.BookBusiness
            var existingGenres = book.BookGenres.Select(bg => bg.GenreId).ToList();
            var updatedListGenres = bookFormUpdateDto.GenresIds;
 
-            //recup les ids genres qui sont dans la liste de base (existingGenres) et qui ne sont pas dans updatedlist (car suppression) sinon il reste dans updated list
-            var genreToBeDeleted = existingGenres.Except(updatedListGenres).ToList();
-            //var bookGenreToBeDeleted = _context.BookGenres.Where(bg => bg.BookId == book.Id && genreToBeDeleted.Contains(bg.GenreId));
-           // _context.BookGenres.(bookGenreToBeDeleted);
+           var genreToBeDeleted = existingGenres.Except(updatedListGenres).ToList();
 
             book.BookGenres.RemoveAll(bg => genreToBeDeleted.Contains(bg.GenreId));
             
-            //trouver les idsgenre qui sont dans updatedlistgenre et ne sont pas dans existinggenre
             var newListGenres = updatedListGenres.Where(id => !existingGenres.Contains(id)).ToList();
 
             var addNewBookGenre = newListGenres.Select(genreId => _context.BookGenres.CreateProxy(entity =>
@@ -141,7 +147,7 @@ namespace LibraryProject.Business.BookBusiness
                 entity.BookId = book.Id;
             })).ToList();
 
-            //_context.BookGenres.AddRange(addNewBookGenre);
+           
             book.BookGenres.AddRange(addNewBookGenre);
 
             _context.Update(book);
