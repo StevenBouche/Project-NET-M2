@@ -41,13 +41,13 @@
 
         <Grid Margin="92,16,400,18" Grid.Row="1" Grid.RowSpan="2">
             <materialDesign:Card Padding="32" Margin="16">
-                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Test" Background="White"/>
+                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="{Binding PageContentLeft}" Background="White" TextWrapping="Wrap"/>
             </materialDesign:Card>
         </Grid>
 
         <Grid Margin="400,16,92,18" Grid.Row="1" Grid.RowSpan="2">
             <materialDesign:Card Padding="32" Margin="16">
-                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="Test" Background="White"/>
+                <TextBlock   Foreground="Navy"  Style="{DynamicResource MaterialDesignTitleTextBlock}" Text="{Binding PageContentRight}" Background="White"/>
             </materialDesign:Card>
         </Grid>
 

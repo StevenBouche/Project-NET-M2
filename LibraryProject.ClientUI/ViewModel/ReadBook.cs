@@ -19,6 +19,20 @@ namespace WPF.Reader.ViewModel
 
         public int PageCount { get; set; }
 
+        public string PageContentLeft
+        {
+            get { return PagesContent[PageCount]; }
+        }
+        public string PageContentRight
+        {
+            get { 
+                if(PageCount + 1 < PagesContent.Length)
+                {
+                   return PagesContent[PageCount + 1];
+                }
+                return ""; 
+            }
+        }
         public void NextPage()
         {
             if(PageCount + 1  < PagesContent.Length)
@@ -36,10 +50,10 @@ namespace WPF.Reader.ViewModel
         }
 
 
-        static IEnumerable<string> Split(string str, int chunkSize)
+        static IEnumerable<string> ChunksUpto(string str, int maxChunkSize)
         {
-            return Enumerable.Range(0, str.Length / chunkSize)
-                .Select(i => str.Substring(i * chunkSize, chunkSize));
+            for (int i = 0; i < str.Length; i += maxChunkSize)
+                yield return str.Substring(i, Math.Min(maxChunkSize, str.Length - i));
         }
 
         public ReadBook()
@@ -70,7 +84,7 @@ Je chantais,
                 ne vous déplaise.
 - Vous chantiez ? j'en suis fort aise :
 Eh bien! dansez maintenant. »"};
-            IEnumerable<string> s = Split(CurrentBook.Content, 10);
+            IEnumerable<string> s = ChunksUpto(CurrentBook.Content, 595);
             PagesContent = s.ToArray();
             PageCount = 0;
         }
