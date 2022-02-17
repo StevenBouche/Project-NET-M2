@@ -5,17 +5,20 @@
 @using LibraryProject.WebUI.Services
 @using Blazorise.RichTextEdit
 @using LibraryProject.WebUI.Models
+@using Blazorise.Snackbar
+
+<PageProgress Visible="@LoadingTable" Color="Color.Primary"/>
 
 <h3>Library Dashboard</h3>
 
 <div class="row">
     <!-- List -->
-    <div class="row">
+    <div class="row col-md-8">
         <Fields>
             <!-- Name Filter -->
             <div class="col-md-3">
                 <Field>
-                    <FieldLabel>Book title :</FieldLabel>
+                    <FieldLabel><Heading Size="HeadingSize.Is6">Book title</Heading></FieldLabel>
                     <FieldBody>
                         <TextEdit Text="@Pagination.Title" TextChanged="@OnTitleChanged" Placeholder="Title filter"></TextEdit>
                     </FieldBody>
@@ -24,7 +27,7 @@
             <!-- Author name filter Filter -->
             <div class="col-md-3">
                 <Field>
-                    <FieldLabel>Author name :</FieldLabel>
+                    <FieldLabel><Heading Size="HeadingSize.Is6">Author name</Heading></FieldLabel>
                     <FieldBody>
                         <TextEdit Text="@Pagination.AuthorName" TextChanged="@OnAuthorNameChanged" Placeholder="Author name filter"></TextEdit>
                     </FieldBody>
@@ -33,7 +36,7 @@
             <!-- Genre multiple selector -->
             <div class="col-md-3">
                 <Field>
-                    <FieldLabel>Genre :</FieldLabel>
+                    <FieldLabel><Heading Size="HeadingSize.Is6">Genre</Heading></FieldLabel>
                     <FieldBody>
                         <Select TValue="int?" SelectedValue="@Pagination.IdGenre" SelectedValueChanged="@OnIdGenreChanged">
                             <SelectItem Value="0">All</SelectItem>
@@ -47,7 +50,7 @@
             </div>
             <div class="col-md-3">
                 <Field>
-                    <FieldLabel>Page size :</FieldLabel>
+                    <FieldLabel><Heading Size="HeadingSize.Is6">Page size</Heading></FieldLabel>
                     <FieldBody>
                         <Select TValue="int" SelectedValue="@Pagination.PageSize" SelectedValueChanged="@OnPageSizeChanged">
                             @foreach (var item in PageSizeValues)
@@ -59,7 +62,7 @@
                 </Field>
             </div>
         </Fields>
-        <div class="col-md-8">
+        <div class="col-md-12">
             <!-- Table -->
             <DataGrid TItem="BookDto"
                       Data="@PaginationResult.Books"
@@ -96,11 +99,11 @@
                     </DataGridColumn>
                 </DataGridColumns>
                 <ButtonRowTemplate>
-                    <Button Color="Color.Success" Clicked="@(_=>OnClickNew())">New</Button>
-                    <Button Color="Color.Primary" Disabled="(SelectedBook is null)" Clicked="@(_=>OnClickEdit())">Edit</Button>
-                    <Button Color="Color.Danger" Disabled="(SelectedBook is null)" Clicked="@(_=>OnClickDelete())">Delete</Button>
-                 <!--   <Button Color="Color.Primary" Clicked="@(_=>OnClickClearFilter())">Clear Filter</Button>
-                       <Button Color="Color.Primary" Clicked="@(_=>OnClickRefresh())">Refresh</Button>-->
+                    <Button Color="Color.Success" Clicked="@(_=>OnClickNew())"><Icon Name="IconName.Add"/> New</Button>
+                    <Button Color="Color.Primary" Disabled="(SelectedBook is null)" Clicked="@(_=>OnClickEdit())"><Icon Name="IconName.Edit"/> Edit</Button>
+                    <Button Color="Color.Danger" Disabled="(SelectedBook is null)" Clicked="@(_=>OnClickDelete())"><Icon Name="IconName.Delete"/> Delete</Button>
+                    <Button Color="Color.Primary" Clicked="@(_=>OnClickClearFilter())"><Icon Name="IconName.Clear"/> Clear Filter</Button>
+                    <Button Color="Color.Primary" Clicked="@(_=>OnClickRefresh())"><Icon Name="IconName.Sync"/> Refresh</Button>
                 </ButtonRowTemplate>
                 <EmptyTemplate>
                     <div class="box">
@@ -109,9 +112,9 @@
                 </EmptyTemplate>
             </DataGrid>
         </div>
-
-        <div class="col-md-4">
-            <Field>
+    </div>
+    <div class="col-md-4">
+        <Field>
                 <FieldLabel><h4>Book Content</h4></FieldLabel>
                 <FieldBody>
                     <RichTextEdit @ref="richTextEditRef"
@@ -121,12 +124,11 @@
                                   SubmitOnEnter="false"
                                   ToolbarPosition="Placement.Top">
                         <Editor>
-
+                            No Book selected
                         </Editor>
                     </RichTextEdit>
                 </FieldBody>
             </Field>
-        </div>
     </div>
 </div>
 
@@ -218,6 +220,8 @@
     </ModalContent>
 </Modal>
 
+<SnackbarStack @ref="snackbarStack" Location="SnackbarStackLocation.Center" />
+
 @code {
 
     //Services
@@ -232,7 +236,7 @@
     public List<GenreDto> Genres { get; set; } = new();
     private BookDto? SelectedBook { get; set; } = null;
     private BookDetailsDto? SelectedDetailsBook { get; set; } = null;
-    
+
 
     // Pagination
 
@@ -262,6 +266,9 @@
 
     private Modal modalRef;
     private bool cancelClose;
+
+    SnackbarStack snackbarStack;
+    private bool LoadingTable = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -318,6 +325,7 @@
 
     private async Task GetBookPaginate()
     {
+        LoadingTable = true;
         var result = await ServiceBook.GetPaginateBooksAsync(Pagination);
         if (result != null)
         {
@@ -327,6 +335,7 @@
                 await OnSelectedRowChanged(result.Books.SingleOrDefault(b => b.Id == SelectedBook.Id));
             }
         }
+        LoadingTable = false;
     }
 
     private async Task OnReadData(DataGridReadDataEventArgs<BookDto> e)
@@ -341,13 +350,32 @@
     }
 
     // ******************
-    // Create / Edit / Delete
+    // Action command
     // ******************
 
-    private void OnClickNew()
+    private async Task OnClickClearFilter()
+    {
+        Pagination = new()
+        {
+            Page = 1,
+            PageSize = 10,
+            IdGenre = 0,
+            AuthorName = string.Empty,
+            Title = string.Empty
+        };
+        await GetBookPaginate();
+    }
+
+    private async Task OnClickRefresh()
+    {
+        await GetBookPaginate();
+    }
+
+    private async Task OnClickNew()
     {
         BookForm = new();
-        ShowModal();
+        await richTextEditRefModal.SetTextAsync(string.Empty).AsTask();
+        await ShowModal();
     }
 
     private async void OnClickEdit()
@@ -401,10 +429,12 @@
         if (BookForm.IdBook != null)
         {
             var result = await ServiceBook.UpdateBook(BookForm);
+            await snackbarStack.PushAsync("Update book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
         }
         else
         {
             var result = await ServiceBook.CreateBook(BookForm);
+            await snackbarStack.PushAsync("Create book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
         }
 
         await GetBookPaginate();

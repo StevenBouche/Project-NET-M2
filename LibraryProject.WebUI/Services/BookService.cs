@@ -36,10 +36,10 @@ namespace LibraryProject.WebUI.Services
                 if (pagination.IdGenre != null && pagination.IdGenre > 0)
                     request = request.AddQueryParameter("IdGenre", (int)pagination.IdGenre);
 
-                if(!string.IsNullOrEmpty(pagination.Title))
+                if(!string.IsNullOrWhiteSpace(pagination.Title))
                     request = request.AddQueryParameter("Title", pagination.Title);
 
-                if (!string.IsNullOrEmpty(pagination.AuthorName))
+                if (!string.IsNullOrWhiteSpace(pagination.AuthorName))
                     request = request.AddQueryParameter("AuthorName", pagination.AuthorName);
                 
                 return Client.GetAsync<PaginationResultDto>(request);
