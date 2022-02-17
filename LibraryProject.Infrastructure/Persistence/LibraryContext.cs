@@ -23,11 +23,13 @@ namespace LibraryProject.Infrastructure.Persistence
 
                 e.HasOne(bc => bc.Book)
                 .WithMany(b => b.BookGenres)
-                .HasForeignKey(bc => bc.BookId);
+                .HasForeignKey(bc => bc.BookId)
+                .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasOne(bc => bc.Genre)
                 .WithMany(c => c.BookGenres)
-                .HasForeignKey(bc => bc.GenreId);
+                .HasForeignKey(bc => bc.GenreId)
+                .OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Genre>(g =>
