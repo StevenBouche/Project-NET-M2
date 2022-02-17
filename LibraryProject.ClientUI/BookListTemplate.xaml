@@ -3,16 +3,15 @@
                     xmlns:model="clr-namespace:LibraryProject.Business.Dto.Books;assembly=LibraryProject.Business.Dto">
     <DataTemplate x:Key="bookDataTemplate" DataType="{x:Type model:BookDto}">
         <StackPanel VerticalAlignment="Top">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition Width="100" />
-                </Grid.ColumnDefinitions>
-                <Label HorizontalAlignment="Stretch" Grid.Column="0" Content="{Binding Path=Name}" />
-                <Label HorizontalAlignment="Stretch" Grid.Column="2" Content="{Binding Path=Author}" />
-                <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch" />
-            </Grid>
+            <DataGrid x:Name="dataGrid1" ItemsSource="{Binding}" AutoGenerateColumns="False">
+        
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Server" Width="Auto" IsReadOnly="True"  Binding="{Binding Path=Name}" />
+                    <DataGridTextColumn Header="Event Log" Width="Auto" IsReadOnly="True"  Binding="{Binding Path=Author}" />
+                </DataGrid.Columns>
+
+            </DataGrid>
         </StackPanel>
     </DataTemplate>
 

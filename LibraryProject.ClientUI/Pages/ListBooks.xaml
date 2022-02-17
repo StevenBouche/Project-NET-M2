@@ -5,13 +5,36 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WPF.Reader.Pages"
       xmlns:vm="clr-namespace:WPF.Reader.ViewModel"
-      xmlns:model="clr-namespace:LibraryProject.Business.Dto.Books;assembly=LibraryProject.Business.Dto"
+      xmlns:model="clr-namespace:LibraryProject.Business.Dto.Books;assembly=LibraryProject.Business.Dto" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       d:DataContext="{d:DesignInstance Type=vm:ListBook, d:IsDesignTimeCreatable=True}"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ListBooks">
-    <StackPanel>
-        <ListBox Grid.Column="0" ItemsSource="{Binding Path=Books}" ItemTemplate="{DynamicResource ResourceKey=bookDataTemplate}" x:Name="Books" />
+    <StackPanel VerticalAlignment="Top">
+        <DataGrid CanUserAddRows="False" x:Name="dataGrid1" ItemsSource="{Binding Books}" AutoGenerateColumns="False" Height="265">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Width="*" IsReadOnly="True"  Binding="{Binding Path=Name}" />
+                <DataGridTextColumn Header="Author" Width="*" IsReadOnly="True"  Binding="{Binding Path=Author}" />
+                <DataGridTextColumn Header="Price" Width="*" IsReadOnly="True"  Binding="{Binding Path=Price}" />
+                <DataGridTextColumn Header="Genre" Width="*" IsReadOnly="True"  Binding="{Binding Path=Genres[0].Name}" />
+            </DataGrid.Columns>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="SelectionChanged">
+                    <i:InvokeCommandAction Command="{Binding BookSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=dataGrid1}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </DataGrid>
+        <Label Background="#FFFFD818">Click on a book to get his details.</Label>
+        <StackPanel VerticalAlignment="Top" Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,10,9,10">
+            <Label>Filter by Genre: </Label>
+            <ComboBox x:Name="genreComboBox" SelectedIndex="0" IsReadOnly="True" Text="Filter by Genre" ItemsSource="{Binding genreList}" HorizontalAlignment="Left" Width="120">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="SelectionChanged">
+                        <i:InvokeCommandAction Command="{Binding ItemSelectedCommand}" CommandParameter="{Binding SelectedItem, ElementName=genreComboBox}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </ComboBox>
+        </StackPanel>
     </StackPanel>
 </Page>
 
