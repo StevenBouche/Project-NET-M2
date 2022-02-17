@@ -1,5 +1,7 @@
+using LibraryProject.Business.Dto.Books;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WPF.Reader.Service;
@@ -28,6 +30,20 @@ namespace WPF.Reader.ViewModel
                 }
             }
             service.Navigate<ListBook>();
+        });
+
+        public ICommand GoToDetails { get; init; } = new RelayCommand(x => {
+            var service = Ioc.Default.GetRequiredService<INavigationService>();
+            if (service.Frame.CanGoBack)
+            {
+                service.Frame.RemoveBackEntry();
+                var entry = service.Frame.RemoveBackEntry();
+                while (entry != null)
+                {
+                    entry = service.Frame.RemoveBackEntry();
+                }
+            }
+            service.Navigate<DetailsBook>(((BookDto)x).Id);
         });
     }
 }

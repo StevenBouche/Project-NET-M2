@@ -1,5 +1,8 @@
 ﻿using LibraryProject.Business.Dto.Books;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace WPF.Reader.ViewModel
@@ -10,17 +13,25 @@ namespace WPF.Reader.ViewModel
         public ICommand ReadCommand { get; init; } = new RelayCommand(x => { /* A vous de définir la commande */ });
 
         // n'oublier pas faire de faire le binding dans DetailsBook.xaml !!!!
-        public BookDetailsDto CurrentBook { get; init; }
+        public BookDetailsDto CurrentBook { get; set; }
+        public int bookId { get; set; }
 
-        public DetailsBook(BookDetailsDto book)
+        public DetailsBook(int bookId)
         {
-            CurrentBook = book;
+            this.bookId = bookId;
+
+            Task.Run(async () =>
+            {
+                CurrentBook = await LibraryProject.API.Client.API.findById(this.bookId);
+                Trace.WriteLine("book: " + this.bookId + ": " + CurrentBook.Name);
+                //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CurrentBook)));
+            });
         }
     }
 
     /* Cette classe sert juste a afficher des donnée de test dans le designer */
     public class InDesignDetailsBook : DetailsBook
     {
-        public InDesignDetailsBook() : base(new BookDetailsDto() /*{ Title = "Test Book" }*/) { }
+        public InDesignDetailsBook() : base(0) { }
     }
 }
