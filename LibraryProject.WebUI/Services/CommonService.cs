@@ -3,6 +3,8 @@
     public class CommonService
     {
 
+        public const string BaseURL = "https://192.168.1.19:8081/api";
+
         protected async Task<T?> TryExecuteAsync<T>(Func<Task<T>> action)
         {
             try

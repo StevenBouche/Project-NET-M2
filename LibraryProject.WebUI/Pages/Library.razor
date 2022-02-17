@@ -14,7 +14,7 @@
             <Field>
                 <FieldLabel>Book title :</FieldLabel>
                 <FieldBody>
-                    <TextEdit @bind-Text="@TitleFilter" Placeholder="Title filter"></TextEdit>
+                    <TextEdit Text="@Pagination.Title" TextChanged="@OnTitleChanged" Placeholder="Title filter"></TextEdit>
                 </FieldBody>
             </Field>
         </div>
@@ -23,7 +23,7 @@
             <Field>
                 <FieldLabel>Author name :</FieldLabel>
                 <FieldBody>
-                    <TextEdit @bind-Text="@AuthorNameFilter" Placeholder="Author name filter"></TextEdit>
+                    <TextEdit Text="@Pagination.AuthorName" TextChanged="@OnAuthorNameChanged" Placeholder="Author name filter"></TextEdit>
                 </FieldBody>
             </Field>
         </div>
@@ -32,11 +32,24 @@
             <Field>
                 <FieldLabel>Genre :</FieldLabel>
                 <FieldBody>
-                     <Select TValue="int?" SelectedValue="@GenreIdFilter">
+                     <Select TValue="int?" SelectedValue="@Pagination.IdGenre" SelectedValueChanged="@OnIdGenreChanged">
                         <SelectItem Value="0">All</SelectItem>
-                        @foreach (var item in genres)
+                        @foreach (var item in Genres)
                         {
                             <SelectItem Value="@item.Id">@item.Name</SelectItem>
+                        }
+                    </Select>
+                </FieldBody>
+            </Field>
+        </div>
+        <div class="col-md-3">
+            <Field>
+                <FieldLabel>Page size :</FieldLabel>
+                <FieldBody>
+                     <Select TValue="int" SelectedValue="@Pagination.PageSize" SelectedValueChanged="@OnPageSizeChanged">
+                        @foreach (var item in PageSizeValues)
+                        {
+                            <SelectItem Value="@item">@item</SelectItem>
                         }
                     </Select>
                 </FieldBody>
@@ -52,20 +65,47 @@
           ReadData="@OnReadData"
           TotalItems="@PaginationResult.Total"
           PageSize="@Pagination.PageSize"
+          ShowPageSizes
           ShowPager
           Editable
           CommandMode="DataGridCommandMode.ButtonRow"
           EditMode="DataGridEditMode.Popup"
+          Hoverable
           Responsive>
     <DataGridColumns>
         <DataGridCommandColumn TItem="BookDto" />
         <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="#" Sortable="false" />
-        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Name)" Caption="Name" Editable="true">
+        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Name)" Caption="Title" Editable="true" Sortable="false">
             <EditTemplate>
                 <TextEdit Placeholder="Enter name" />
             </EditTemplate>
         </DataGridColumn>
-        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Author)" Caption="Author" Editable="true"></DataGridColumn>
+        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Author)" Caption="Author" Editable="true" Sortable="false"></DataGridColumn>
+        <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="Genres" Editable="true" Sortable="false">
+            <DisplayTemplate>
+                @{
+                    var item = (context as BookDto);
+
+                    foreach(var genre in item.Genres)
+                    {
+                        <Badge Color="Color.Primary">@genre.Name</Badge>
+                    }
+                }
+            </DisplayTemplate>
+            <EditTemplate>
+                <Blazorise.Components.Autocomplete 
+                    TItem="GenreDto"
+                    TValue="int"
+                    Data="@Genres"
+                    TextField="@(item => item.Name)"
+                    ValueField="@(item => item.Id)"
+                    Placeholder="Search..."
+                    Multiple
+                    FreeTyping="false"
+                    @bind-SelectedValues="multipleSelectioValues"
+                    @bind-SelectedTexts="multipleSelectionTexts " />
+            </EditTemplate>
+        </DataGridColumn>
     </DataGridColumns>
     <ButtonRowTemplate>
         <Button Color="Color.Success" Clicked="context.NewCommand.Clicked">New</Button>
@@ -125,35 +165,20 @@
 
     #region data
 
-    public List<GenreDto> genres { get; set; } = new();
+    public List<GenreDto> Genres { get; set; } = new();
     private BookDto? selectedBook { get; set; } = null;
 
     #endregion data
 
     #region pagination
 
-    public int GenreIdFilter {
-        get => Pagination.IdGenre is null ? 0 : (int)Pagination.IdGenre;
-        set => Pagination.IdGenre = value == 0 ? null : value; 
-    }
-
-    public string AuthorNameFilter
-    {
-        get => Pagination.AuthorName is null ? string.Empty : Pagination.AuthorName;
-        set => Pagination.AuthorName = value;
-    }
-
-    public string TitleFilter
-    {
-        get => Pagination.Title is null ? string.Empty : Pagination.Title;
-        set => Pagination.Title = value;
-    }
+    private List<int> PageSizeValues = new(){ 2, 5, 10, 20, 50 };
 
     private PaginationDto Pagination = new()
         {
             Page = 1,
             PageSize = 10,
-            IdGenre = null,
+            IdGenre = 0,
             AuthorName = string.Empty,            
             Title = string.Empty
         };
@@ -168,7 +193,7 @@
 
     #region filter
 
-    List<string> multipleSelectioValues = new();
+    List<int> multipleSelectioValues = new();
     List<string> multipleSelectionTexts = new();
     private bool multipleAutocompleteFreeTyping = false;
 
@@ -188,11 +213,35 @@
     protected override async Task OnInitializedAsync()
     {
         await GetBookPaginate();
-        genres = serviceGenre.GetGenres();
+        Genres = await serviceGenre.GetGenresAsync() ?? new List<GenreDto>();
         await base.OnInitializedAsync();
     }
 
     #region paginationMethod
+
+    Task OnPageSizeChanged(int value)
+    {
+        Pagination.PageSize = value;
+        return GetBookPaginate();
+    }
+
+    Task OnTitleChanged(string value)
+    {
+        Pagination.Title = value;
+        return GetBookPaginate();
+    }
+
+    Task OnAuthorNameChanged(string value)
+    {
+        Pagination.AuthorName = value;
+        return GetBookPaginate();
+    }
+
+    Task OnIdGenreChanged(int? value)
+    {
+        Pagination.IdGenre = value;
+        return GetBookPaginate();
+    }
 
     private async Task GetBookPaginate()
     {
@@ -212,24 +261,25 @@
 
     private async Task OnReadData(DataGridReadDataEventArgs<BookDto> e)
     {
-       /* if (!e.CancellationToken.IsCancellationRequested)
+        if (!e.CancellationToken.IsCancellationRequested)
         {
-            List<BookDto> response = null;
-
-            // this can be call to anything, in this case we're calling a fictional api
-            //var response = await Http.GetJsonAsync<Employee[]>( $"some-api/employees?page={e.Page}&pageSize={e.PageSize}" );
             if (e.ReadDataMode is DataGridReadDataMode.Paging)
-                //response = (await EmployeeData.GetDataAsync()).Skip( ( e.Page - 1 ) * e.PageSize ).Take( e.PageSize ).ToList();
-                response = serviceBook.GetBooks();
+            {
+                if(Pagination.Page != e.Page)
+                {
+                    Pagination.Page = e.Page;
+                    await GetBookPaginate();
+                }
+            }
             else
                 throw new Exception("Unhandled ReadDataMode");
 
-            if (!e.CancellationToken.IsCancellationRequested)
+            /* if (!e.CancellationToken.IsCancellationRequested)
             {
                 Total = response.Count;
                 books = new List<BookDto>(response);
-            }
-        }*/
+            }*/
+        }
     }
 
     #region methodEdit
