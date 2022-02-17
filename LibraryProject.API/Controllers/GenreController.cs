@@ -1,5 +1,4 @@
-﻿using FluentValidation.Results;
-using LibraryProject.API.Controllers.Common;
+﻿using LibraryProject.API.Controllers.Common;
 using LibraryProject.Business.Dto.Books;
 using LibraryProject.Business.Dto.Common;
 using LibraryProject.Business.Dto.Genres;
@@ -10,7 +9,6 @@ namespace LibraryProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Produces("application/json")]
     public class GenreController : LibraryBaseController
     {
         private readonly IGenreService _service;
@@ -44,7 +42,7 @@ namespace LibraryProject.API.Controllers
 
         [HttpPost]
         [ProducesResponseType(typeof(ApiErrorResponse), 400)]
-        [ProducesResponseType(typeof(GenreDto),201)]
+        [ProducesResponseType(typeof(GenreDto), 201)]
         public async Task<ActionResult<GenreDto>> CreateGenre([FromBody] GenreFormCreateDto genreFormCreateDto)
         {
             return await TryExecuteAsync<ActionResult>(async () =>
@@ -52,7 +50,6 @@ namespace LibraryProject.API.Controllers
                 var result = await _service.CreateGenreAsync(genreFormCreateDto);
                 return Created($"/api/genre/{result.Id}", result);
             });
-
         }
 
         [HttpDelete("{id}")]
@@ -65,7 +62,6 @@ namespace LibraryProject.API.Controllers
                 _service.DeleteGenreById(id);
                 return Ok();
             });
-            
         }
 
         [HttpGet("/{id}/books")]
@@ -78,7 +74,5 @@ namespace LibraryProject.API.Controllers
                 return Ok(_service.GetAllBooksByGenreId(id));
             });
         }
-
     }
-    
 }

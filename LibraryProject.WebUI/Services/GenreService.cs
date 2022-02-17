@@ -1,19 +1,23 @@
 ﻿using LibraryProject.Business.Dto.Genres;
+using RestSharp;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LibraryProject.WebUI.Services
 {
-    public class GenreService
+    public class GenreService : CommonService
     {
-        private readonly List<GenreDto> Genres = new()
-        {
-            new GenreDto() { Id = 1, Name = "Genre1", CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow },
-            new GenreDto() { Id = 2, Name = "Genre2", CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow },
-            new GenreDto() { Id = 3, Name = "Genre3", CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow }
-        };
+        private readonly RestClient Client;
 
-        public List<GenreDto> GetBooks()
+        public GenreService(RestClient client)
         {
-            return Genres;
+            Client = client;
+        }
+
+        public Task<List<GenreDto>?> GetGenresAsync()
+        {
+            var request = new RestRequest($"{BaseURL}/genre");
+            return Client.GetAsync<List<GenreDto>>(request);
         }
     }
 }
