@@ -1,4 +1,7 @@
-﻿namespace LibraryProject.WebUI.Services
+﻿using System;
+using System.Threading.Tasks;
+
+namespace LibraryProject.WebUI.Services
 {
     public class CommonService
     {

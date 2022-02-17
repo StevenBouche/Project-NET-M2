@@ -6,7 +6,11 @@ using LibraryProject.WebUI;
 using LibraryProject.WebUI.Services;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using RestSharp;
+using System;
+using System.Globalization;
+using System.Net.Http;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -34,8 +38,22 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddScoped<BookService>();
 builder.Services.AddScoped<GenreService>();
 
+
 var app = builder.Build();
 
-//app.UseRequestLocalization("en-US");
+SetDefaultCulture(app);
 
 await app.RunAsync();
+
+void SetDefaultCulture(WebAssemblyHost host)
+{
+    /*var jsInterop = host.Services.GetRequiredService<IJSRuntime>();
+    var result = await jsInterop.InvokeAsync<string>("blazorCulture.get");
+    CultureInfo culture;
+    if (result != null)
+        culture = new CultureInfo(result);
+    else*/
+    var culture = new CultureInfo("en-US");
+    CultureInfo.DefaultThreadCurrentCulture = culture;
+    CultureInfo.DefaultThreadCurrentUICulture = culture;
+}

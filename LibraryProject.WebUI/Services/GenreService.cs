@@ -1,5 +1,7 @@
 ﻿using LibraryProject.Business.Dto.Genres;
 using RestSharp;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LibraryProject.WebUI.Services
 {
