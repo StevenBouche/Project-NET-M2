@@ -26,7 +26,7 @@ namespace LibraryProject.Business.Dto.Books
         public string Content { get; set; } = string.Empty;
 
         [JsonProperty("genres")]
-        public IList<GenreDto> Genres { get; set; } = new List<GenreDto>();
+        public List<GenreDto> Genres { get; set; } = new();
 
         [JsonProperty("createdAt")]
         public DateTimeOffset CreatedAt { get; set; }
