@@ -68,6 +68,7 @@ namespace LibraryProject.API
                 x.DisableDataAnnotationsValidation = true;
                 x.RegisterValidatorsFromAssemblyContaining<GenreFormCreateDtoValidator>();
                 x.RegisterValidatorsFromAssemblyContaining<BookFormCreateDtoValidator>();
+                x.RegisterValidatorsFromAssemblyContaining<BookFormUpdateDtoValidator>();
             });
 
             //Hub

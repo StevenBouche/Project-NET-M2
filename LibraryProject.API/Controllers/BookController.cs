@@ -1,6 +1,7 @@
 ﻿using LibraryProject.API.Hubs;
 using LibraryProject.Business.BookBusiness;
 using LibraryProject.Business.Dto.Books;
+using LibraryProject.Business.Dto.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,7 +21,8 @@ namespace LibraryProject.API.Controllers.Common
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(BookDetailsDto), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BookDetailsDto), StatusCodes.Status200OK)]
         public async Task<ActionResult> Get(int id)
         {
             return await TryExecuteAsync<ActionResult>(async () =>
@@ -30,7 +32,8 @@ namespace LibraryProject.API.Controllers.Common
         }
 
         [HttpGet("search")]
-        [ProducesResponseType(typeof(PaginationResultDto), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(PaginationResultDto), StatusCodes.Status200OK)]
         public  ActionResult Get([FromQuery] PaginationDto data)
         {
             return TryExecute<ActionResult>( () =>
@@ -40,7 +43,8 @@ namespace LibraryProject.API.Controllers.Common
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(BookDetailsDto), 201)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BookDetailsDto), StatusCodes.Status201Created)]
         public async Task<ActionResult> Post([FromBody] BookFormCreateDto data)
         {
             return await TryExecuteAsync<ActionResult>(async () =>
@@ -52,7 +56,8 @@ namespace LibraryProject.API.Controllers.Common
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(string), 200)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         public Task<ActionResult> Delete(int id)
         {
             return TryExecuteAsync<ActionResult>( async () =>
@@ -63,8 +68,9 @@ namespace LibraryProject.API.Controllers.Common
             });
         }
 
-        [HttpPut()]
-        [ProducesResponseType(typeof(BookDetailsDto), 200)]
+        [HttpPut]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(BookDetailsDto), StatusCodes.Status200OK)]
         public async Task<ActionResult> Update([FromBody] BookFormUpdateDto bookFormUpdateDto)
         {
             return await TryExecuteAsync<ActionResult>(async () =>
@@ -73,7 +79,6 @@ namespace LibraryProject.API.Controllers.Common
                 return Ok(resultDto);
             });
         }
-
 
     }
 }
