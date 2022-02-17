@@ -4,6 +4,7 @@
 @using LibraryProject.Business.Dto.Genres
 @using LibraryProject.WebUI.Services
 @using Blazorise.RichTextEdit
+@using LibraryProject.WebUI.Models
 
 <h3>Library Dashboard</h3>
 
@@ -112,9 +113,11 @@
                     </DataGridColumn>
                 </DataGridColumns>
                 <ButtonRowTemplate>
-                    <Button Color="Color.Success" Clicked="@OnClickNew(context.NewCommand)">New</Button>
+                    <Button Color="Color.Success" Clicked="@(_=>OnClickNew())">New</Button>
                     <Button Color="Color.Primary" Disabled="(SelectedBook is null)" Clicked="@OnClickEdit(context.EditCommand)">Edit</Button>
                     <Button Color="Color.Danger" Disabled="(SelectedBook is null)" Clicked="@OnClickDelete(context.DeleteCommand)">Delete</Button>
+                 <!--   <Button Color="Color.Primary" Clicked="@OnClickClearFilter()">Clear Filter</Button>
+                    <Button Color="Color.Primary" Clicked="@OnClickEdit(context.EditCommand)">Refresh</Button>-->
                 </ButtonRowTemplate>
                 <EmptyTemplate>
                     <div class="box">
@@ -160,6 +163,93 @@
     
 </div>
 
+<Modal @ref="modalRef" Closing="@OnModalClosing">
+    <ModalContent Centered="true" Size="ModalSize.ExtraLarge">
+        <ModalHeader>
+            <ModalTitle>Create Book</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+           <Fields class="row">
+               <!-- Name Filter -->
+            <div class="col-md-6">
+                <Field>
+                    <FieldLabel>Book title :</FieldLabel>
+                    <FieldBody>
+                        <TextEdit Placeholder="Enter Title"></TextEdit>
+                    </FieldBody>
+                </Field>
+            </div>
+            <!-- Author name filter Filter -->
+            <div class="col-md-6">
+                <Field>
+                    <FieldLabel>Author name :</FieldLabel>
+                    <FieldBody>
+                        <TextEdit Placeholder="Enter Author name"></TextEdit>
+                    </FieldBody>
+                </Field>
+            </div>
+            <div class="col-md-6">
+                <Field>
+                    <FieldLabel>Genre :</FieldLabel>
+                    <FieldBody>
+                        <Dropdown>
+                            <DropdownToggle Color="Color.Primary">
+                                Dropdown
+                            </DropdownToggle>
+                            <DropdownMenu>
+                                <DropdownItem>Action</DropdownItem>
+                                <DropdownDivider />
+                                <DropdownItem>Another Action</DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </FieldBody>
+                </Field>
+            </div>
+            <div class="col-md-12">
+                <Field>
+                    <FieldLabel>Contenu :</FieldLabel>
+                    <FieldBody>
+                        <RichTextEdit @ref="richTextEditRef"
+                          Theme="RichTextEditTheme.Snow"
+                          ContentChanged="@OnContentChanged"
+                          PlaceHolder="Type your post here..."
+                          ReadOnly="@readOnly"
+                          SubmitOnEnter="false"
+                          EnterPressed="@OnSave"
+                          ToolbarPosition="Placement.Top">
+                        <Editor>My example content</Editor>
+                        <Toolbar>
+                            <RichTextEditToolbarGroup>
+                                <RichTextEditToolbarButton Action="RichTextEditAction.Bold" />
+                                <RichTextEditToolbarButton Action="RichTextEditAction.Italic" />
+                                <RichTextEditToolbarSelect Action="RichTextEditAction.Size">
+                                    <RichTextEditToolbarSelectItem Value="small" />
+                                    <RichTextEditToolbarSelectItem Selected="true" />
+                                    <RichTextEditToolbarSelectItem Value="large" />
+                                    <RichTextEditToolbarSelectItem Value="huge">Very Big</RichTextEditToolbarSelectItem>
+                                </RichTextEditToolbarSelect>
+                                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="ordered" />
+                                <RichTextEditToolbarButton Action="RichTextEditAction.List" Value="bullet" />
+                            </RichTextEditToolbarGroup>
+                            <!-- Custom toolbar content -->
+                        <RichTextEditToolbarGroup Float="Float.End">
+                                <Button onClick="window.open('https://www.quilljs.com/','quilljs')"><Icon Name="IconName.InfoCircle" /></Button>
+                                <Button Clicked="@OnSave"><Icon Name="IconName.Save" /></Button>
+                        </RichTextEditToolbarGroup>
+            </Toolbar>
+        </RichTextEdit>
+                    </FieldBody>
+                </Field>
+            </div>
+           </Fields>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@CloseModal">This will close the modal</Button>
+            <Button Color="Color.Primary" Clicked="@TryCloseModal">This will not</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+
 @code {
 
     #region services
@@ -176,6 +266,7 @@
     public List<GenreDto> Genres { get; set; } = new();
     private BookDto? SelectedBook { get; set; } = null;
     private BookDetailsDto? SelectedDetailsBook { get; set; } = null;
+    private BookForm BookForm { get; set; } = new();
 
     #endregion data
 
@@ -231,8 +322,15 @@
         await base.OnInitializedAsync();
     }
 
-    async Task OnSelectedRowChanged(BookDto item)
+    async Task OnSelectedRowChanged(BookDto? item)
     {
+        if(item == null)
+        {
+            SelectedBook = null;
+            SelectedDetailsBook = null;
+            return;
+        }
+
         SelectedBook = SelectedBook != null && SelectedBook.Id == item.Id ? null : item;
         SelectedDetailsBook = SelectedBook == null ? null : await serviceBook.GetBookDetailsById(SelectedBook.Id);
     }
@@ -269,14 +367,18 @@
         if (result != null)
         {
             PaginationResult = result;
+            if(SelectedBook != null)
+            {
+                await OnSelectedRowChanged(result.Books.SingleOrDefault(b => b.Id == SelectedBook.Id));
+            }
         }
     }
 
     #endregion paginationMethod
 
-    private EventCallback OnClickNew(NewCommandContext command)
+    private void OnClickNew()
     {
-        return command.Clicked;
+         ShowModal();
     }
 
     private EventCallback OnClickEdit(EditCommandContext<BookDto> command)
@@ -330,4 +432,36 @@
     }
 
     #endregion methodEdit
+
+    private Modal modalRef;
+
+    private bool cancelClose;
+
+    private Task ShowModal()
+    {
+        return modalRef.Show();
+    }
+
+    private Task CloseModal()
+    {
+        cancelClose = false;
+
+        return modalRef.Hide();
+    }
+
+    private Task TryCloseModal()
+    {
+        cancelClose = true;
+
+        return modalRef.Hide();
+    }
+
+    private Task OnModalClosing( ModalClosingEventArgs e )
+    {
+        // just set Cancel to prevent modal from closing
+        e.Cancel = cancelClose 
+            || e.CloseReason != CloseReason.UserClosing;
+
+        return Task.CompletedTask;
+    }
 }
