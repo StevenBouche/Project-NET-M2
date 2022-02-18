@@ -6,6 +6,8 @@ Notre projet est décomposer en 3 composants de la stack .NET :
 - Web UI Blazor (.NET 6) 
 - Client UI WPF (.NET 6) 
 
+Il est nécessaire de start l'API en premier avant le Client et la WebUI.
+
 ## API Rest
 
 ### Prerequisites
