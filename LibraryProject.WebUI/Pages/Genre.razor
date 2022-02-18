@@ -13,24 +13,24 @@
             <ModalTitle>Closing modal</ModalTitle>
         </ModalHeader>
         <ModalBody>
-             <Validations Mode="ValidationMode.Auto" Model="@genreCreated">
+            <Validations Mode="ValidationMode.Auto" Model="@genreCreated" StatusChanged="@OnStatusChanged">
                 <Validation>
                     <Field>
                         <FieldLabel>Genre name :</FieldLabel>
                         <FieldBody>
                             <TextEdit @bind-Text="@genreCreated.Name" Placeholder="Enter genre name">
-                                 <Feedback>
+                                <Feedback>
                                     <ValidationError />
-                                 </Feedback>
+                                </Feedback>
                             </TextEdit>
                         </FieldBody>
                     </Field>
-               </Validation>
+                </Validation>
             </Validations>
         </ModalBody>
         <ModalFooter>
             <Button Color="Color.Secondary" Clicked="@CloseModal">Cancel</Button>
-            <Button Color="Color.Primary" Clicked="@OnCreate">Save</Button>
+            <Button Color="Color.Primary" Clicked="@OnCreate" Disabled="@SaveDisabled">Save</Button>
         </ModalFooter>
     </ModalContent>
 </Modal>
@@ -42,49 +42,33 @@
         </TableRow>
     </TableHeader>
     <TableBody>
-        @foreach(var genre in genres)
+        @foreach (var genre in genres)
         {
             <TableRow>
-            <TableRowHeader>@genre.Id</TableRowHeader>
-            <TableRowCell>@genre.Name</TableRowCell>
-            <Button Clicked="@(_ => OnDelete(@genre.Id))">
-                <Icon Name="IconName.Delete" />
+                <TableRowHeader>@genre.Id</TableRowHeader>
+                <TableRowCell>@genre.Name</TableRowCell>
+                <Button Clicked="@(_ => OnDelete(@genre.Id))">
+                    <Icon Name="IconName.Delete" />
                 </Button>
-                
-        </TableRow>
+
+            </TableRow>
         }
     </TableBody>
 </Table>
-
-<!--
-
-
-    <Validations Mode="ValidationMode.Auto" Model="@user">
-    <Validation>
-        <Field Horizontal="true">
-            <FieldLabel ColumnSize="ColumnSize.Is2">Full Name</FieldLabel>
-            <FieldBody ColumnSize="ColumnSize.Is10">
-                <TextEdit Placeholder="First and last name" @bind-Text="@user.Name">
-                    <Feedback>
-                        <ValidationError />
-                    </Feedback>
-                </TextEdit>
-            </FieldBody>
-        </Field>
-    </Validation>
-    </Validations>
--->
 
 @code {
 
     [Inject]
     public GenreService serviceGenre { get; set; }
+    [Inject]
+    public SnackBarService ServiceSnack { get; set; }
 
     List<GenreDto> genres = new();
     GenreForm genreCreated = new();
 
     private Modal modalRef;
     private bool cancelClose;
+    private bool SaveDisabled = true;
 
     protected override async Task OnInitializedAsync()
     {
@@ -105,6 +89,7 @@
 
     private Task ShowModal()
     {
+        SaveDisabled = true;
         genreCreated = new();
         return modalRef.Show();
     }
@@ -115,10 +100,10 @@
         return modalRef.Hide();
     }
 
-    private Task OnModalClosing( ModalClosingEventArgs e )
+    private Task OnModalClosing(ModalClosingEventArgs e)
     {
         // just set Cancel to prevent modal from closing
-        e.Cancel = cancelClose 
+        e.Cancel = cancelClose
             || e.CloseReason != CloseReason.UserClosing;
 
         return Task.CompletedTask;
@@ -127,13 +112,22 @@
     private async Task OnCreate()
     {
         GenreFormCreateDto genreFormCreateDto = new()
-        {
-            Name = genreCreated.Name
-        };
-        await serviceGenre.CreateGenre(genreFormCreateDto);
+            {
+                Name = genreCreated.Name
+            };
+        var genre = await serviceGenre.CreateGenre(genreFormCreateDto);
         genres = await serviceGenre.GetGenresAsync();
+
+        if(genre != null)
+        {
+            ServiceSnack.SnackbarStack.PushAsync("Genre created with success", Blazorise.Snackbar.SnackbarColor.Success);
+        }
         await modalRef.Hide();
     }
 
-
+    Task OnStatusChanged(ValidationsStatusChangedEventArgs eventArgs )
+    {
+        SaveDisabled = eventArgs.Status != ValidationStatus.Success;
+        return Task.CompletedTask;
+    }
 }

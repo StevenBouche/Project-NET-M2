@@ -9,8 +9,8 @@ namespace LibraryProject.Business.Validators.GenreValidators
         {
             RuleFor(x => x.Name).NotEmpty()
                 .WithMessage("{PropertyName} should be not empty")
-                .Must(name => name.All(char.IsLetter))
-                .WithMessage("{PropertyName} should be only letters.");
+                /*.Must(name => name.All(char.IsLetter))
+                .WithMessage("{PropertyName} should be only letters.")*/;
         }
     }
 }

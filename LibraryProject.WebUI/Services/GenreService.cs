@@ -2,6 +2,7 @@
 using RestSharp;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Blazorise.Snackbar;
 
 namespace LibraryProject.WebUI.Services
 {
@@ -15,33 +16,29 @@ namespace LibraryProject.WebUI.Services
         }
 
 
-        public Task<List<GenreDto>?> GetGenresAsync()
+        public async Task<List<GenreDto>?> GetGenresAsync()
         {
-
-            return TryExecuteAsync(() =>
-            {
-                var request = new RestRequest($"{BaseURL}/genre");
-                return Client.GetAsync<List<GenreDto>>(request);
-            });
+            var request = new RestRequest($"{BaseURL}/genre");
+            var result = await Client.ExecuteGetAsync<List<GenreDto>>(request);
+            return HandleResult(result);
         }
 
-        public Task DeleteGenre(int id)
+        public async Task DeleteGenre(int id)
         {
-            return TryExecuteAsync(() =>
+            var request = new RestRequest($"{BaseURL}/genre/{id}", Method.Delete);
+            var result = await Client.ExecuteAsync(request);
+
+            if (!result.IsSuccessful)
             {
-                var request = new RestRequest($"{BaseURL}/genre/{id}", Method.Delete);
-                return Client.DeleteAsync(request);
-            });
+                SnackService.SnackbarStack?.PushAsync(result.Content, SnackbarColor.Danger, options => { options.IntervalBeforeClose = 2000; });
+            }
         }
 
-        public Task<GenreDto?> CreateGenre(GenreFormCreateDto genreFormCreateDto)
+        public async Task<GenreDto?> CreateGenre(GenreFormCreateDto genreFormCreateDto)
         {
-            return TryExecuteAsync(() =>
-            {
-                var request = new RestRequest($"{BaseURL}/genre", Method.Post).AddJsonBody(genreFormCreateDto);
-                return Client.PostAsync<GenreDto>(request);
-            });
-
+            var request = new RestRequest($"{BaseURL}/genre", Method.Post).AddJsonBody(genreFormCreateDto);
+            var result = await Client.ExecutePostAsync<GenreDto>(request);
+            return HandleResult(result);
         }
     }
 }

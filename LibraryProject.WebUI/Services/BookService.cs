@@ -94,7 +94,7 @@ namespace LibraryProject.WebUI.Services
 
             if (!result.IsSuccessful)
             {
-                SnackService.SnackbarStack?.PushAsync(result.Content, SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
+                SnackService.SnackbarStack?.PushAsync(result.Content, SnackbarColor.Danger, options => { options.IntervalBeforeClose = 2000; });
             }
         }
     }

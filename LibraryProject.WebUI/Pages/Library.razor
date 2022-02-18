@@ -497,12 +497,16 @@
         if (BookForm.IdBook != null)
         {
             var result = await ServiceBook.UpdateBook(BookForm);
-            await ServiceSnack.SnackbarStack.PushAsync("Update book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
+            if (result != null)
+                await ServiceSnack.SnackbarStack.PushAsync("Update book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
+            else return;
         }
         else
         {
             var result = await ServiceBook.CreateBook(BookForm);
-            await ServiceSnack.SnackbarStack.PushAsync("Create book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
+            if(result != null)
+                await ServiceSnack.SnackbarStack.PushAsync("Create book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
+            else return;
         }
 
         await GetBookPaginate();

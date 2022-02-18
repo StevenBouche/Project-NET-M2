@@ -34,8 +34,15 @@ namespace LibraryProject.Business.GenreBusiness
 
         public async Task<GenreDto> CreateGenreAsync(GenreFormCreateDto genreFormCreateDto)
         {
+            var isNotOk = _context.Genres.Any(g => g.Name == genreFormCreateDto.Name);
+
+            if (isNotOk)
+            {
+                throw new GenreException(GenreExceptionTypes.GENRE_CREATE_ALREADY_EXIST, $"Name : {genreFormCreateDto.Name}");
+            }
+
             var entityCreated = new Genre { Name = genreFormCreateDto.Name};
-            //var entityCreated = _mapper.Map<Genre>(genreFormCreateDto);
+
             _context.Genres.Add(entityCreated);
             await _context.SaveChangesAsync();
 

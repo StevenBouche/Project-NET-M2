@@ -9,7 +9,9 @@ namespace LibraryProject.Business.Exceptions
     public enum GenreExceptionTypes
     {
         [Description("Genre non trouvé")]
-        GENRE_NOT_FOUND
+        GENRE_NOT_FOUND,
+        [Description("Duplicate genre Name")]
+        GENRE_CREATE_ALREADY_EXIST
     }
     public class GenreException: BusinessException
     {
