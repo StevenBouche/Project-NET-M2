@@ -46,8 +46,10 @@ Genre API :
 
 ### Start app
 
-- Visual Studio : définir le projet "LibraryProject.WebUI" en tant que projet de démarrage et Run 
+- Visual Studio : définir le projet "LibraryProject.WebUI" en tant que projet de démarrage et Run
+ 
 - CLI :
+    - Installer le Runtime : https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.2-windows-x64-installer
     - cd LibraryProject.WebUI
     - dotnet run (dotnet watch run pour le hot reload)
 
