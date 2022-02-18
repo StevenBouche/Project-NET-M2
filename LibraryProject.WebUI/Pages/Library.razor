@@ -5,8 +5,8 @@
 @using LibraryProject.WebUI.Services
 @using Blazorise.RichTextEdit
 @using LibraryProject.WebUI.Models
-@using Blazorise.Snackbar
 @using System.ComponentModel.DataAnnotations
+@using Blazorise.Snackbar
 
 <PageProgress Visible="@LoadingTable" Color="Color.Primary"/>
 
@@ -249,8 +249,6 @@
     </ModalContent>
 </Modal>
 
-<SnackbarStack @ref="snackbarStack" Location="SnackbarStackLocation.Center" />
-
 @code {
 
     //Services
@@ -259,6 +257,8 @@
     public BookService ServiceBook { get; set; }
     [Inject]
     public GenreService ServiceGenre { get; set; }
+    [Inject]
+    public SnackBarService ServiceSnack { get; set; }
 
     // Data
 
@@ -299,9 +299,7 @@
     private bool cancelClose;
     Validations ModalValidations;
 
-    SnackbarStack snackbarStack;
     private bool LoadingTable = false;
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -499,12 +497,12 @@
         if (BookForm.IdBook != null)
         {
             var result = await ServiceBook.UpdateBook(BookForm);
-            await snackbarStack.PushAsync("Update book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
+            await ServiceSnack.SnackbarStack.PushAsync("Update book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
         }
         else
         {
             var result = await ServiceBook.CreateBook(BookForm);
-            await snackbarStack.PushAsync("Create book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
+            await ServiceSnack.SnackbarStack.PushAsync("Create book successful", SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
         }
 
         await GetBookPaginate();

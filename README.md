@@ -21,8 +21,8 @@ Il est nécessaire de start l'API en premier avant le Client et la WebUI.
     - A la racine du répertoire "Project-NET-M2"
     - docker-compose -f docker-compose.yml -f docker-compose.override.yml up -d
 
-Swagger : http://localhost:8080/swagger ou https://localhost:8081/swagger
-Api accessible via : http://localhost:8080/api ou https://localhost:8081/api
+- Swagger : http://localhost:8080/swagger ou https://localhost:8081/swagger
+- Api accessible via : http://localhost:8080/api ou https://localhost:8081/api
 
 ### Fonctionnalités (Documentation : https://localhost:8081/swagger)
 

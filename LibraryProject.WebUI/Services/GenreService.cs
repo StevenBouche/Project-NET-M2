@@ -9,10 +9,11 @@ namespace LibraryProject.WebUI.Services
     {
         private readonly RestClient Client;
 
-        public GenreService(RestClient client)
+        public GenreService(RestClient client, SnackBarService service) : base(service)
         {
             Client = client;
         }
+
 
         public Task<List<GenreDto>?> GetGenresAsync()
         {
