@@ -1,0 +1,139 @@
+﻿@page "/genre"
+@using LibraryProject.Business.Dto.Genres
+@using LibraryProject.WebUI.Models
+@using LibraryProject.WebUI.Services
+@using System.Threading
+
+<h3>Genre Dashboard</h3>
+<Button Color="Color.Success" Clicked="@ShowModal">New</Button>
+
+<Modal @ref="modalRef" Closing="@OnModalClosing">
+    <ModalContent Centered="true">
+        <ModalHeader>
+            <ModalTitle>Closing modal</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+             <Validations Mode="ValidationMode.Auto" Model="@genreCreated">
+                <Validation>
+                    <Field>
+                        <FieldLabel>Genre name :</FieldLabel>
+                        <FieldBody>
+                            <TextEdit @bind-Text="@genreCreated.Name" Placeholder="Enter genre name">
+                                 <Feedback>
+                                    <ValidationError />
+                                 </Feedback>
+                            </TextEdit>
+                        </FieldBody>
+                    </Field>
+               </Validation>
+            </Validations>
+        </ModalBody>
+        <ModalFooter>
+            <Button Color="Color.Secondary" Clicked="@CloseModal">Cancel</Button>
+            <Button Color="Color.Primary" Clicked="@OnCreate">Save</Button>
+        </ModalFooter>
+    </ModalContent>
+</Modal>
+<Table Hoverable="true">
+    <TableHeader>
+        <TableRow>
+            <TableHeaderCell>#</TableHeaderCell>
+            <TableHeaderCell>Name</TableHeaderCell>
+        </TableRow>
+    </TableHeader>
+    <TableBody>
+        @foreach(var genre in genres)
+        {
+            <TableRow>
+            <TableRowHeader>@genre.Id</TableRowHeader>
+            <TableRowCell>@genre.Name</TableRowCell>
+            <Button Clicked="@(_ => OnDelete(@genre.Id))">
+                <Icon Name="IconName.Delete" />
+                </Button>
+                
+        </TableRow>
+        }
+    </TableBody>
+</Table>
+
+<!--
+
+
+    <Validations Mode="ValidationMode.Auto" Model="@user">
+    <Validation>
+        <Field Horizontal="true">
+            <FieldLabel ColumnSize="ColumnSize.Is2">Full Name</FieldLabel>
+            <FieldBody ColumnSize="ColumnSize.Is10">
+                <TextEdit Placeholder="First and last name" @bind-Text="@user.Name">
+                    <Feedback>
+                        <ValidationError />
+                    </Feedback>
+                </TextEdit>
+            </FieldBody>
+        </Field>
+    </Validation>
+    </Validations>
+-->
+
+@code {
+
+    [Inject]
+    public GenreService serviceGenre { get; set; }
+
+    List<GenreDto> genres = new();
+    GenreForm genreCreated = new();
+
+    private Modal modalRef;
+    private bool cancelClose;
+
+    protected override async Task OnInitializedAsync()
+    {
+        genres = await serviceGenre.GetGenresAsync();
+        await base.OnInitializedAsync();
+    }
+
+    private async Task OnDelete(int id)
+    {
+        await serviceGenre.DeleteGenre(id);
+        genres = await serviceGenre.GetGenresAsync();
+    }
+
+    private void EnableCard(bool enable)
+    {
+        enable = true;
+    }
+
+    private Task ShowModal()
+    {
+        genreCreated = new();
+        return modalRef.Show();
+    }
+
+    private Task CloseModal()
+    {
+        cancelClose = false;
+        return modalRef.Hide();
+    }
+
+    private Task OnModalClosing( ModalClosingEventArgs e )
+    {
+        // just set Cancel to prevent modal from closing
+        e.Cancel = cancelClose 
+            || e.CloseReason != CloseReason.UserClosing;
+
+        return Task.CompletedTask;
+    }
+
+    private async Task OnCreate()
+    {
+        GenreFormCreateDto genreFormCreateDto = new()
+        {
+            Name = genreCreated.Name
+        };
+        await serviceGenre.CreateGenre(genreFormCreateDto);
+        genres = await serviceGenre.GetGenresAsync();
+        await modalRef.Hide();
+    }
+
+
+}

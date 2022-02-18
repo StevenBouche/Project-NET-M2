@@ -16,8 +16,31 @@ namespace LibraryProject.WebUI.Services
 
         public Task<List<GenreDto>?> GetGenresAsync()
         {
-            var request = new RestRequest($"{BaseURL}/genre");
-            return Client.GetAsync<List<GenreDto>>(request);
+
+            return TryExecuteAsync(() =>
+            {
+                var request = new RestRequest($"{BaseURL}/genre");
+                return Client.GetAsync<List<GenreDto>>(request);
+            });
+        }
+
+        public Task DeleteGenre(int id)
+        {
+            return TryExecuteAsync(() =>
+            {
+                var request = new RestRequest($"{BaseURL}/genre/{id}", Method.Delete);
+                return Client.DeleteAsync(request);
+            });
+        }
+
+        public Task<GenreDto?> CreateGenre(GenreFormCreateDto genreFormCreateDto)
+        {
+            return TryExecuteAsync(() =>
+            {
+                var request = new RestRequest($"{BaseURL}/genre", Method.Post).AddJsonBody(genreFormCreateDto);
+                return Client.PostAsync<GenreDto>(request);
+            });
+
         }
     }
 }
