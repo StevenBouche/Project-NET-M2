@@ -41,7 +41,10 @@ namespace LibraryProject.WebUI.Services
 
                 if (!string.IsNullOrWhiteSpace(pagination.AuthorName))
                     request = request.AddQueryParameter("AuthorName", pagination.AuthorName);
-                
+
+                if (!string.IsNullOrWhiteSpace(pagination.OrderBy))
+                    request = request.AddQueryParameter("OrderBy", pagination.OrderBy);
+
                 return Client.GetAsync<PaginationResultDto>(request);
             });
         }

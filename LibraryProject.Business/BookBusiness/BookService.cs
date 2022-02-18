@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
 using LibraryProject.Business.Dto.Books;
-using LibraryProject.Business.Dto.Genres;
 using LibraryProject.Business.Exceptions;
-using LibraryProject.Business.GenreBusiness;
 using LibraryProject.Domain.Entities;
 using LibraryProject.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Dynamic.Core;
 
 namespace LibraryProject.Business.BookBusiness
 {
@@ -13,7 +12,7 @@ namespace LibraryProject.Business.BookBusiness
     {
         private readonly LibraryContext _context;
         private readonly IMapper _mapper;
-
+        private readonly List<string> SortableField = new List<string>() { "Id", "Name", "Author", "Price", "CreatedAt", "UpdatedAt" };
         public BookService(LibraryContext context, IMapper mapper)
         {
             _context = context;
@@ -47,8 +46,12 @@ namespace LibraryProject.Business.BookBusiness
                 filter = filter.Where(entity => entity.Name.Contains(pagination.Title));
             }
 
+            if (!string.IsNullOrWhiteSpace(pagination.OrderBy) && CanOrderByBook(pagination.OrderBy))
+            {
+                filter = filter.OrderBy(pagination.OrderBy).AsQueryable();
+            }
+
             var pageEntity = filter
-                .OrderByDescending(x => x.CreatedAt)
                 .Skip((pagination.Page - 1) * pagination.PageSize)
                 .Take(pagination.PageSize);
 
@@ -60,6 +63,20 @@ namespace LibraryProject.Business.BookBusiness
             };
 
             return paginationResultDto;
+        }
+
+        private bool CanOrderByBook(string orderBy)
+        {
+            var items = orderBy.Split(',').Select(elem => elem.Trim());
+            foreach (var it in items)
+            {
+                var elem = it.Split(' ');
+                if(elem.Length <= 0 || elem.Length > 2 || !SortableField.Contains(elem[0]))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         public async Task<BookDetailsDto> GetByIdAsync(int id)
@@ -89,7 +106,7 @@ namespace LibraryProject.Business.BookBusiness
             if (!isOk)
             {
                 var IdsNotFound = ids.Where(id => !IdsGenre.Contains(id)).ToList();
-                var IdsString = string.Join(",", IdsNotFound);
+                var IdsString = string.Join(',', IdsNotFound);
                 throw new BookException(BookBusinessExceptionTypes.GENRE_NOT_FOUND, $"sur les IDs : {IdsString}");
             }
         }

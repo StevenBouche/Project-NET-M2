@@ -9,6 +9,7 @@ namespace LibraryProject.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Produces("application/json")]
     public class GenreController : LibraryBaseController
     {
         private readonly IGenreService _service;
@@ -20,8 +21,8 @@ namespace LibraryProject.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(GenreDto), StatusCodes.Status200OK)]
-        public ActionResult<List<GenreDto>> GetAllGenres()
+        [ProducesResponseType(typeof(IList<GenreDto>), StatusCodes.Status200OK)]
+        public ActionResult<IList<GenreDto>> GetAllGenres()
         {
             return TryExecute<ActionResult>(() =>
             {
@@ -66,8 +67,8 @@ namespace LibraryProject.API.Controllers
 
         [HttpGet("/{id}/books")]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(BookDto), StatusCodes.Status200OK)]
-        public ActionResult GetAllBooksByGenreId(int id)
+        [ProducesResponseType(typeof(IList<BookDto>), StatusCodes.Status200OK)]
+        public ActionResult<IList<BookDto>> GetAllBooksByGenreId(int id)
         {
             return TryExecute(() =>
             {

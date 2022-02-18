@@ -13,6 +13,6 @@ namespace LibraryProject.Business.Dto.Books
         public int? IdGenre { get; set; } = null;
         public string? AuthorName { get; set; } = null;
         public string? Title { get; set; } = null;
-
+        public string? OrderBy { get; set; } = null;
     }
 }

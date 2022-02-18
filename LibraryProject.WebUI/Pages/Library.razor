@@ -6,6 +6,7 @@
 @using Blazorise.RichTextEdit
 @using LibraryProject.WebUI.Models
 @using Blazorise.Snackbar
+@using System.ComponentModel.DataAnnotations
 
 <PageProgress Visible="@LoadingTable" Color="Color.Primary"/>
 
@@ -13,7 +14,7 @@
 
 <div class="row">
     <!-- List -->
-    <div class="row col-md-8">
+    <div class="row col-md-12">
         <Fields>
             <!-- Name Filter -->
             <div class="col-md-3">
@@ -78,14 +79,16 @@
                       Hoverable
                       PagerPosition="DataGridPagerPosition.Top"
                       FixedHeader="true"
+                      FixedHeaderDataGridHeight="auto"
                       FixedHeaderDataGridMaxHeight="400px"
                       Responsive>
                 <DataGridColumns>
                     <DataGridCommandColumn TItem="BookDto" />
-                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="#" Sortable="false" />
-                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Name)" Caption="Title" Editable="true" Sortable="false" />
-                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Author)" Caption="Author" Editable="true" Sortable="false"/>
-                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="Genres" Editable="true" Sortable="false">
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Id)" Caption="#" Editable="false" Sortable="true" />
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Name)" Caption="Title" Editable="false" Sortable="true" />
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Author)" Caption="Author" Editable="false" Sortable="true"/>
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Price)" Caption="Price" Editable="false" Sortable="true"/>                 
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.Genres)" Caption="Genres" Editable="false" Sortable="false">
                         <DisplayTemplate>
                             @{
                                 var item = (context as BookDto);
@@ -97,6 +100,8 @@
                             }
                         </DisplayTemplate>
                     </DataGridColumn>
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.CreatedAt)" Caption="CreatedAt" Editable="false" Sortable="true"/>
+                    <DataGridColumn TItem="BookDto" Field="@nameof(BookDto.UpdatedAt)" Caption="UpdatedAt" Editable="false" Sortable="true"/>
                 </DataGridColumns>
                 <ButtonRowTemplate>
                     <Button Color="Color.Success" Clicked="@(_=>OnClickNew())"><Icon Name="IconName.Add"/> New</Button>
@@ -113,7 +118,7 @@
             </DataGrid>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-12 mt-3">
         <Field>
                 <FieldLabel><h4>Book Content</h4></FieldLabel>
                 <FieldBody>
@@ -138,32 +143,51 @@
             <ModalTitle>Create Book</ModalTitle>
         </ModalHeader>
         <ModalBody>
+            <Validations @ref="ModalValidations" Mode="ValidationMode.Auto" Model="@BookForm" StatusChanged="@OnStatusChanged">
             <Fields class="row">
                 <!-- Name Filter -->
                 <div class="col-md-6">
+                    <Validation>
                     <Field>
                         <FieldLabel>Book title :</FieldLabel>
                         <FieldBody>
-                            <TextEdit Placeholder="Enter Title" Text="@(BookForm.Name)" TextChanged="@( v => BookForm.Name = v)"></TextEdit>
+                            <TextEdit Placeholder="Enter Title" @bind-Text="@BookForm.Name">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
                         </FieldBody>
                     </Field>
+                    </Validation>
                 </div>
                 <!-- Author name filter Filter -->
                 <div class="col-md-6">
+                    <Validation>
                     <Field>
                         <FieldLabel>Author name :</FieldLabel>
                         <FieldBody>
-                            <TextEdit Placeholder="Enter Author name" Text="@(BookForm.Author)" TextChanged="@( v => BookForm.Author = v)"></TextEdit>
+                            <TextEdit Placeholder="Enter Author name" @bind-Text="@BookForm.Author">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
                         </FieldBody>
                     </Field>
+                    </Validation>
                 </div>
                 <div class="col-md-6">
+                    <Validation>
                     <Field>
                         <FieldLabel>Price :</FieldLabel>
                         <FieldBody>
-                            <NumericEdit TValue="double" Value="@(BookForm.Price)" ValueChanged="@( v => BookForm.Price = v)" />
+                            <NumericEdit TValue="double" @bind-Value="@BookForm.Price">
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </NumericEdit>
                         </FieldBody>
                     </Field>
+                    </Validation>
                 </div>
                 <div class="col-md-6">
                     <Field>
@@ -198,7 +222,11 @@
                 </div>
                 <div class="col-md-12">
                     <Field>
-                        <FieldLabel>Contenu :</FieldLabel>
+                        <FieldLabel>Content :</FieldLabel>
+                        @{
+                            var styleValid = InvalidContent ? "display: block !important;" : "display: none !important;";
+                            <div class="invalid-feedback" style="@styleValid">Content must not be empty.</div>
+                        }
                         <FieldBody>
                             <RichTextEdit @ref="richTextEditRefModal"
                                           Theme="RichTextEditTheme.Snow"
@@ -212,9 +240,10 @@
                     </Field>
                 </div>
             </Fields>
+            </Validations>
         </ModalBody>
         <ModalFooter>
-            <Button Color="Color.Primary" Clicked="@TryCloseModal">Save</Button>
+            <Button Color="Color.Primary" Clicked="@TryCloseModal" Disabled="@SaveDisabled">Save</Button>
             <Button Color="Color.Danger" Clicked="@CloseModal">Close</Button>
         </ModalFooter>
     </ModalContent>
@@ -247,7 +276,8 @@
             PageSize = 10,
             IdGenre = 0,
             AuthorName = string.Empty,
-            Title = string.Empty
+            Title = string.Empty,
+            OrderBy = string.Empty
         };
     private PaginationResultDto PaginationResult = new()
         {
@@ -263,12 +293,15 @@
     protected RichTextEdit richTextEditRefModal;
 
     //Modal
-
+    private bool SaveDisabled = true;
+    private bool InvalidContent = true;
     private Modal modalRef;
     private bool cancelClose;
+    Validations ModalValidations;
 
     SnackbarStack snackbarStack;
     private bool LoadingTable = false;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -340,13 +373,34 @@
 
     private async Task OnReadData(DataGridReadDataEventArgs<BookDto> e)
     {
-        if (!e.CancellationToken.IsCancellationRequested &&
-            e.ReadDataMode is DataGridReadDataMode.Paging &&
-            Pagination.Page != e.Page)
+
+        if (!e.CancellationToken.IsCancellationRequested/* &&
+    e.ReadDataMode is DataGridReadDataMode.Paging*/)
         {
-            Pagination.Page = e.Page;
-            await GetBookPaginate();
+            var sort = GetSortQueryString(e.Columns);
+            if(Pagination.Page != e.Page || Pagination.OrderBy != sort)
+            {
+                Pagination.OrderBy = sort;
+                Pagination.Page = e.Page;
+                await GetBookPaginate();
+            }
         }
+    }
+
+    public string GetSortQueryString(IEnumerable<DataGridColumnInfo> sortables)
+    {
+        if (sortables.Count() is 0) return "";
+
+        var sortList = new List<string>();
+        foreach (var sortable in sortables)
+        {
+            if(sortable.SortDirection != SortDirection.None)
+            {
+                var direction = sortable.SortDirection == SortDirection.Descending ? " desc" : null;
+                sortList.Add($"{sortable.Field}{direction}");
+            }
+        }
+        return string.Join(",", sortList);
     }
 
     // ******************
@@ -412,6 +466,9 @@
 
     private Task ShowModal()
     {
+        InvalidContent = false;
+        SaveDisabled = true;
+        ModalValidations.ClearAll();
         return modalRef.Show();
     }
 
@@ -421,10 +478,23 @@
         return modalRef.Hide();
     }
 
+    Task OnStatusChanged(ValidationsStatusChangedEventArgs eventArgs )
+    {
+        SaveDisabled = eventArgs.Status != ValidationStatus.Success;
+        return Task.CompletedTask;
+    }
+
     private async Task TryCloseModal()
     {
         //cancelClose = true;
-        BookForm.Content = await richTextEditRefModal.GetTextAsync();
+        BookForm.Content = await richTextEditRefModal.GetTextAsync().AsTask();
+
+        InvalidContent = string.IsNullOrWhiteSpace(BookForm.Content);
+
+        if (InvalidContent)
+        {
+            return;
+        }
 
         if (BookForm.IdBook != null)
         {
