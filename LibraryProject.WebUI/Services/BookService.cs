@@ -3,6 +3,7 @@ using LibraryProject.WebUI.Models;
 using RestSharp;
 using System.Linq;
 using System.Threading.Tasks;
+using Blazorise.Snackbar;
 
 namespace LibraryProject.WebUI.Services
 {
@@ -11,88 +12,90 @@ namespace LibraryProject.WebUI.Services
 
         private readonly RestClient Client;
 
-        public BookService(RestClient client)
+        public BookService(RestClient client, SnackBarService service) : base(service)
         {
             Client = client;
         }
 
-        public Task<BookDetailsDto?> GetBookDetailsById(int id)
+        public async Task<BookDetailsDto?> GetBookDetailsById(int id)
         {
-            return TryExecuteAsync(() =>
-            {
-                var request = new RestRequest($"{BaseURL}/book/{id}");
-                return Client.GetAsync<BookDetailsDto>(request);
-            });
+            var request = new RestRequest($"{BaseURL}/book/{id}");
+            var result = await Client.ExecuteGetAsync<BookDetailsDto>(request);
+            return HandleResult(result);
         }
 
-        public Task<PaginationResultDto?> GetPaginateBooksAsync(PaginationDto pagination)
+        public async Task<PaginationResultDto?> GetPaginateBooksAsync(PaginationDto pagination)
         {
-            return TryExecuteAsync(() =>
-            {
-                var request = new RestRequest($"{BaseURL}/book/search")
-                .AddQueryParameter("Page", pagination.Page)
-                .AddQueryParameter("PageSize", pagination.PageSize);
 
-                if (pagination.IdGenre != null && pagination.IdGenre > 0)
-                    request = request.AddQueryParameter("IdGenre", (int)pagination.IdGenre);
+            var request = new RestRequest($"{BaseURL}/book/search")
+            .AddQueryParameter("Page", pagination.Page)
+            .AddQueryParameter("PageSize", pagination.PageSize);
 
-                if(!string.IsNullOrWhiteSpace(pagination.Title))
-                    request = request.AddQueryParameter("Title", pagination.Title);
+            if (pagination.IdGenre != null && pagination.IdGenre > 0)
+                request = request.AddQueryParameter("IdGenre", (int)pagination.IdGenre);
 
-                if (!string.IsNullOrWhiteSpace(pagination.AuthorName))
-                    request = request.AddQueryParameter("AuthorName", pagination.AuthorName);
+            if(!string.IsNullOrWhiteSpace(pagination.Title))
+                request = request.AddQueryParameter("Title", pagination.Title);
 
-                if (!string.IsNullOrWhiteSpace(pagination.OrderBy))
-                    request = request.AddQueryParameter("OrderBy", pagination.OrderBy);
+            if (!string.IsNullOrWhiteSpace(pagination.AuthorName))
+                request = request.AddQueryParameter("AuthorName", pagination.AuthorName);
 
-                return Client.GetAsync<PaginationResultDto>(request);
-            });
+            if (!string.IsNullOrWhiteSpace(pagination.OrderBy))
+                request = request.AddQueryParameter("OrderBy", pagination.OrderBy);
+
+            var result = await Client.ExecuteGetAsync<PaginationResultDto?>(request);
+
+            return HandleResult(result);
         }
 
-        public Task<BookDetailsDto?> CreateBook(BookForm form)
+        public async Task<BookDetailsDto?> CreateBook(BookForm form)
         {
-            return TryExecuteAsync(() =>
+            var createObj = new BookFormCreateDto()
             {
-                var createObj = new BookFormCreateDto()
-                {
-                    Name = form.Name,
-                    Content = form.Content,
-                    Author = form.Author,
-                    Price = form.Price,
-                    GenresIds = form.Genres.Select(g => g.Id).ToList()
-                };
+                Name = form.Name,
+                Content = form.Content,
+                Author = form.Author,
+                Price = form.Price,
+                GenresIds = form.Genres.Select(g => g.Id).ToList()
+            };
 
-                var request = new RestRequest($"{BaseURL}/book", Method.Post).AddJsonBody(createObj);
-                return Client.PostAsync<BookDetailsDto>(request);
-            });
+            var request = new RestRequest($"{BaseURL}/book", Method.Post).AddJsonBody(createObj);
+            var result = await Client.ExecutePostAsync<BookDetailsDto>(request);
+
+            return HandleResult(result);
         }
 
         public async Task<BookDetailsDto?> UpdateBook(BookForm form)
         {
-            return await TryExecuteAsync(async () =>
+
+            if (form.IdBook == null)
+                return null;
+
+            var createObj = new BookFormUpdateDto()
             {
-                if (form.IdBook == null)
-                    return null;
+                IdBook = (int)form.IdBook,
+                Name = form.Name,
+                Content = form.Content,
+                Author = form.Author,
+                Price = form.Price,
+                GenresIds = form.Genres.Select(g => g.Id).ToList()
+            };
 
-                var createObj = new BookFormUpdateDto()
-                {
-                    IdBook = (int)form.IdBook,
-                    Name = form.Name,
-                    Content = form.Content,
-                    Author = form.Author,
-                    Price = form.Price,
-                    GenresIds = form.Genres.Select(g => g.Id).ToList()
-                };
+            var request = new RestRequest($"{BaseURL}/book", Method.Put).AddJsonBody(createObj);
+            var result = await Client.ExecutePutAsync<BookDetailsDto>(request);
 
-                var request = new RestRequest($"{BaseURL}/book", Method.Put).AddJsonBody(createObj);
-                return await Client.PutAsync<BookDetailsDto>(request);
-            });
+            return HandleResult(result);
         }
 
         public async Task DeleteBook(int id)
         {
             var request = new RestRequest($"{BaseURL}/book/{id}", Method.Delete);
-            await Client.DeleteAsync<BookDetailsDto>(request);
+            var result = await Client.ExecuteAsync(request);
+
+            if (!result.IsSuccessful)
+            {
+                SnackService.SnackbarStack?.PushAsync(result.Content, SnackbarColor.Success, options => { options.IntervalBeforeClose = 2000; });
+            }
         }
     }
 }

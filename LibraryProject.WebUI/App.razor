@@ -1,4 +1,5 @@
-﻿
+﻿@using Blazorise.Snackbar
+@using LibraryProject.WebUI.Services
 
 <Blazorise.ThemeProvider Theme="@theme">
     <Router AppAssembly="@typeof(App).Assembly">
@@ -17,7 +18,22 @@
     <PageProgressAlert />
 </Blazorise.ThemeProvider>
 
+<SnackbarStack @ref="snackbarStack" Location="SnackbarStackLocation.Center"/>
+
 @code{
+
+    SnackbarStack? snackbarStack;
+    [Inject]
+    public SnackBarService? Service { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (Service != null)
+            Service.SnackbarStack = snackbarStack;
+
+        base.OnAfterRender(firstRender);
+    }
+
     private Theme theme = new()
     {
         BarOptions = new()

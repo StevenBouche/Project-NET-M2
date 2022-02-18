@@ -11,8 +11,21 @@ namespace LibraryProject.Infrastructure.Persistence
             Context = context;
         }
 
+        public double GetRandomNumber(Random random, double minimum, double maximum)
+        {
+            
+            return random.NextDouble() * (maximum - minimum) + minimum;
+        }
+
         public void SeedData()
         {
+
+            int nbBook = 100;
+            double priceMin = 0.01;
+            double priceMax = 1000;
+            Random random = new Random();
+            List<Book> b = new List<Book>();
+
             List<Book> books = new List<Book>()
             {
                 new Book()
@@ -62,6 +75,21 @@ namespace LibraryProject.Infrastructure.Persistence
                 },
             };
 
+            for (int i = 0; i < nbBook; i++)
+            {
+                b.Add(new Book()
+                {
+                    Name = $"Livre_{6+i}",
+                    Author = Faker.Name.FullName(),
+                    Price = (double)((int)(GetRandomNumber(random, priceMin, priceMax)*100))/100,
+                    Content = string.Join("\n\n", Faker.Lorem.Paragraphs(random.Next(1, 5))),
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
+                });
+            }
+
+            books.AddRange(b);
+
             List<Genre> genres = new List<Genre>()
             {
                 new Genre()
@@ -93,6 +121,12 @@ namespace LibraryProject.Infrastructure.Persistence
                     Name="Essai",
                     CreatedAt = DateTimeOffset.UtcNow,
                     UpdatedAt = DateTimeOffset.UtcNow
+                },
+                new Genre()
+                {
+                    Name="Bandol",
+                    CreatedAt = DateTimeOffset.UtcNow,
+                    UpdatedAt = DateTimeOffset.UtcNow
                 }
             };
 
@@ -108,9 +142,15 @@ namespace LibraryProject.Infrastructure.Persistence
 
             Context.SaveChanges();
 
-            for(int i = 0; i < genres.Count; i++)
+            foreach (var book in books)
             {
-                AddUniqueBookGenre(genres[i], books[i]);
+                var nbGenre = random.Next(1, 4);
+                for(int i = 0; i < nbGenre; i++)
+                {
+                    var list = genres.Where(gr => !book.BookGenres.Any(bg => bg.GenreId == gr.Id)).ToList();
+                    var g = list.ElementAt(random.Next(1, list.Count - 1));
+                    AddUniqueBookGenre(g, book);
+                }
             }
 
             Context.SaveChanges();
