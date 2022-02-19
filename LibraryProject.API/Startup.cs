@@ -69,6 +69,7 @@ namespace LibraryProject.API
                 x.RegisterValidatorsFromAssemblyContaining<GenreFormCreateDtoValidator>();
                 x.RegisterValidatorsFromAssemblyContaining<BookFormCreateDtoValidator>();
                 x.RegisterValidatorsFromAssemblyContaining<BookFormUpdateDtoValidator>();
+                x.RegisterValidatorsFromAssemblyContaining<BookPaginationValidator>();
             });
 
             //Hub
