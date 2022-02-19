@@ -42,6 +42,10 @@ Genre API :
 - POST Création d'un genre
 - Delete Suppression d'un genre et de ses liens avec les books
 
+Notification par Websocket :
+
+- Possibilité de se connecter en websocket pour les clients (Client UI et Web UI) afin de recevoir des notifications quand un nouveau livre est disponible ou mise à jour.
+
 ## Web UI 
 
 ### Start app
@@ -80,3 +84,4 @@ Accessible via : https://localhost/library
 - Lire un livre
 - Lister tous les genres
 - Afficher les livres d’un genre (scrolling)
+- Notification quand un nouveau livre est disponible dans la bibliothèque
