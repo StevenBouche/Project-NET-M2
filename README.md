@@ -74,7 +74,7 @@ Accessible via : https://localhost/library
 - Visual Studio : définir le projet "LibraryProject.ClientUI" en tant que projet de démarrage et Run 
 - CLI :
     - cd LibraryProject.ClientUI
-    - dotnet build --configuration Releasee
+    - dotnet build --configuration Release
     - bin/Release/net6.0-windows/LibraryProject.ClientUI.exe
 
 ### Fonctionnalités
